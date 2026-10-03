@@ -1,0 +1,871 @@
+---
+// proveedor/productos.astro – Catálogo y Gestión de Productos del Proveedor
+import AppLayout from '../../layouts/AppLayout.astro';
+import { INITIAL_PRODUCTS, STORAGE_KEY } from '../../data/products';
+---
+
+<AppLayout pageTitle="Catálogo de Productos" role="proveedor">
+
+  <!-- Header con título y botón de acción -->
+  <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1.5rem;">
+    <div>
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.3rem;">
+        <span class="badge-s b-ok" style="font-size:0.75rem;"><i class="bi bi-shield-check"></i> Distribuidora Andina</span>
+        <span class="text-muted-s" style="font-size:0.85rem;">· Catálogo conectado en tiempo real</span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-size:clamp(1.5rem,2.8vw,2rem); font-weight:800; letter-spacing:-.03em; margin:0 0 0.3rem 0;">
+        Mis Productos y Escalas
+      </h2>
+      <p style="margin:0; color:var(--color-muted); font-size:0.95rem;">
+        Los productos que publiques aquí estarán inmediatamente disponibles para los comerciantes en el catálogo de Summa.
+      </p>
+    </div>
+    <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+      <a href="/comerciante/explorar" class="btn btn-o-line" title="Ver cómo lo ven los comerciantes">
+        <i class="bi bi-eye-fill"></i> Ver como comerciante
+      </a>
+      <button class="btn btn-o" onclick="openNewProductModal()">
+        <i class="bi bi-plus-lg"></i> Publicar producto
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Resumen -->
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:0.75rem; margin-bottom:1.5rem;">
+    <div class="stat">
+      <span class="ico" style="margin-bottom:0.5rem; display:block;">
+        <i class="bi bi-boxes"></i>
+      </span>
+      <div class="n" id="stat-total">0</div>
+      <small class="text-muted-s">productos en catálogo</small>
+    </div>
+    <div class="stat">
+      <span class="ico" style="margin-bottom:0.5rem; display:block; background:#DDF5E9; color:#12724A;">
+        <i class="bi bi-broadcast"></i>
+      </span>
+      <div class="n" id="stat-published" style="color:var(--color-ok);">0</div>
+      <small class="text-muted-s">publicados visibles</small>
+    </div>
+    <div class="stat">
+      <span class="ico" style="margin-bottom:0.5rem; display:block; background:#FFF0C2; color:#8A5A00;">
+        <i class="bi bi-people-fill"></i>
+      </span>
+      <div class="n" id="stat-demands" style="color:var(--color-orange-deep);">0</div>
+      <small class="text-muted-s">con demanda activa</small>
+    </div>
+    <div class="stat solid">
+      <span class="ico" style="margin-bottom:0.5rem; display:block; background:rgba(255,255,255,.12); color:var(--color-orange-sun);">
+        <i class="bi bi-archive-fill"></i>
+      </span>
+      <div class="n" id="stat-stock">0</div>
+      <small style="opacity:0.8;">unidades en almacén</small>
+    </div>
+  </div>
+
+  <!-- Barra de búsqueda, filtros y cambio de vista -->
+  <div class="panel flat" style="padding:1rem; margin-bottom:1.25rem;">
+    <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; align-items:center;" id="toolbar-grid">
+      
+      <!-- Buscador -->
+      <div class="input-group" style="width:100%;">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input 
+          type="text" 
+          id="search-input" 
+          class="form-control" 
+          placeholder="Buscar por nombre, SKU o categoría..."
+          oninput="handleSearch()"
+          style="border-radius:0 12px 12px 0;"
+        />
+      </div>
+
+      <!-- Filtros rápidos y selector de vista -->
+      <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; justify-content:space-between;">
+        <div style="display:flex; gap:0.5rem; flex:1; min-width:240px;">
+          <select class="form-select" id="status-filter" onchange="handleFilterChange()" style="flex:1;">
+            <option value="all">Todos los estados</option>
+            <option value="published">Solo publicados</option>
+            <option value="draft">Pausados / Borrador</option>
+            <option value="active">Con demanda abierta</option>
+            <option value="low">Stock bajo (&lt; 50 un)</option>
+          </select>
+          <select class="form-select" id="sort-select" onchange="handleSortChange()" style="flex:1;">
+            <option value="default">Ordenar: Predeterminado</option>
+            <option value="stock-desc">Mayor stock</option>
+            <option value="stock-asc">Menor stock</option>
+            <option value="name">Nombre A-Z</option>
+          </select>
+        </div>
+
+        <!-- Switch Grid / Tabla -->
+        <div style="display:flex; border:2px solid var(--color-orange-line); border-radius:12px; overflow:hidden; background:#fff;">
+          <button 
+            id="btn-view-grid" 
+            class="view-toggle-btn active" 
+            onclick="switchView('grid')" 
+            title="Vista en tarjetas"
+            aria-label="Vista en tarjetas"
+          >
+            <i class="bi bi-grid-fill"></i>
+          </button>
+          <button 
+            id="btn-view-table" 
+            class="view-toggle-btn" 
+            onclick="switchView('table')" 
+            title="Vista en tabla"
+            aria-label="Vista en tabla"
+          >
+            <i class="bi bi-table"></i>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Chips de Categoría -->
+    <div class="chips" style="margin-top:0.75rem; margin-bottom:0;" id="category-chips">
+      <button class="chip active" data-cat="all" onclick="filterCategory(this, 'all')">Todos</button>
+      <button class="chip" data-cat="aceites" onclick="filterCategory(this, 'aceites')">Aceites y Grasas</button>
+      <button class="chip" data-cat="granos" onclick="filterCategory(this, 'granos')">Granos y Harinas</button>
+      <button class="chip" data-cat="azucar" onclick="filterCategory(this, 'azucar')">Azúcar y Dulces</button>
+      <button class="chip" data-cat="pastas" onclick="filterCategory(this, 'pastas')">Pastas y Fideos</button>
+      <button class="chip" data-cat="lacteos" onclick="filterCategory(this, 'lacteos')">Lácteos</button>
+      <button class="chip" data-cat="limpieza" onclick="filterCategory(this, 'limpieza')">Limpieza</button>
+    </div>
+  </div>
+
+  <!-- Conteo de resultados -->
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem;">
+    <div style="font-weight:700; font-size:1rem;" id="results-count">
+      Cargando productos...
+    </div>
+    <div style="display:flex; gap:0.5rem; align-items:center;">
+      <small class="text-muted-s">Precios en Bolivianos (Bs)</small>
+      <button class="btn btn-sm btn-o-line" style="padding:0.2rem 0.5rem; font-size:0.75rem;" onclick="resetToInitialData()" title="Restaurar datos iniciales">
+        <i class="bi bi-arrow-counterclockwise"></i> Reiniciar datos
+      </button>
+    </div>
+  </div>
+
+  <!-- VISTA 1: GRID DE TARJETAS (Renderizado dinámico) -->
+  <div id="grid-view-container" class="products-grid"></div>
+
+  <!-- VISTA 2: TABLA DE GESTIÓN (Renderizado dinámico) -->
+  <div id="table-view-container" class="panel" style="padding:0; overflow:hidden; display:none; margin-bottom:2rem;">
+    <div style="overflow-x:auto;">
+      <table class="summa-table" id="products-table">
+        <thead>
+          <tr>
+            <th style="padding-left:1.25rem;">Producto / SKU</th>
+            <th>Categoría</th>
+            <th>Estado Catálogo</th>
+            <th>Stock Actual</th>
+            <th>Precio Base</th>
+            <th>Precio Mayorista</th>
+            <th>Demanda</th>
+            <th style="text-align:right; padding-right:1.25rem;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="table-body-container"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Estado vacío cuando no hay resultados de búsqueda -->
+  <div id="no-results-panel" class="panel flat" style="display:none; text-align:center; padding:3rem 1.5rem; margin-bottom:2rem;">
+    <div style="font-size:3rem; margin-bottom:0.75rem;">🔍</div>
+    <h3 style="font-size:1.3rem; margin-bottom:0.4rem;">No se encontraron productos</h3>
+    <p class="text-muted-s" style="margin-bottom:1.2rem; max-width:400px; margin-left:auto; margin-right:auto;">
+      No hay productos que coincidan con tu búsqueda o filtro seleccionado.
+    </p>
+    <button class="btn btn-o-line" onclick="resetFilters()">
+      <i class="bi bi-arrow-clockwise"></i> Restablecer filtros
+    </button>
+  </div>
+
+  <!-- MODAL: PUBLICAR NUEVO PRODUCTO -->
+  <div id="modal-new-product" class="modal-backdrop" style="display:none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div class="ico" style="width:36px; height:36px; font-size:1rem;"><i class="bi bi-plus-lg"></i></div>
+          <h3 style="font-size:1.2rem; margin:0;">Publicar Nuevo Producto</h3>
+        </div>
+        <button class="btn-close-modal" onclick="closeModal('modal-new-product')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <form id="new-product-form" onsubmit="handleCreateProduct(event)">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:0.75rem;">
+          <div style="grid-column: span 2;">
+            <label class="form-label">Nombre del producto *</label>
+            <input class="form-control" id="new-prod-name" placeholder="Ej. Aceite Crisol 900 ml, caja x12" required />
+          </div>
+          <div>
+            <label class="form-label">Categoría *</label>
+            <select class="form-select" id="new-prod-cat" required>
+              <option value="aceites">Aceites y Grasas</option>
+              <option value="granos">Granos y Harinas</option>
+              <option value="azucar">Azúcar y Dulces</option>
+              <option value="pastas">Pastas y Fideos</option>
+              <option value="lacteos">Lácteos</option>
+              <option value="limpieza">Limpieza</option>
+              <option value="bebidas">Bebidas</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Código SKU</label>
+            <input class="form-control" id="new-prod-sku" placeholder="Ej. ACE-CRI-900" />
+          </div>
+          <div style="grid-column: span 2;">
+            <label class="form-label">Presentación / Empaque *</label>
+            <input class="form-control" id="new-prod-pres" placeholder="Ej. Caja x 12 botellas plásticas" required />
+          </div>
+          <div>
+            <label class="form-label">Stock disponible en almacén *</label>
+            <input type="number" min="1" class="form-control" id="new-prod-stock" placeholder="Ej. 200" required />
+          </div>
+          <div>
+            <label class="form-label">Unidad de medida *</label>
+            <select class="form-select" id="new-prod-unit">
+              <option value="cajas">Cajas</option>
+              <option value="quintales">Quintales (50kg)</option>
+              <option value="fardos">Fardos</option>
+              <option value="packs">Packs</option>
+              <option value="bolsas">Bolsas</option>
+              <option value="paquetes">Paquetes</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Escala de Precios -->
+        <div style="background:var(--color-orange-tint); border-radius:14px; padding:0.9rem; margin-bottom:1.25rem;">
+          <div style="font-weight:700; font-size:0.9rem; color:var(--color-orange-deep); margin-bottom:0.2rem;">
+            Escala de precios por volumen (Bs)
+          </div>
+          <p style="font-size:0.8rem; color:var(--color-muted); margin-bottom:0.6rem;">
+            Los comerciantes verán estos descuentos automáticos al formar grupos.
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem;">
+            <div>
+              <label style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:0.2rem;">Base (1 a 49)</label>
+              <div class="input-group">
+                <span class="input-group-text" style="padding:0.4rem 0.6rem; font-size:0.8rem;">Bs</span>
+                <input type="number" id="new-prod-p1" step="0.5" class="form-control" placeholder="80" style="padding:0.4rem 0.6rem;" required />
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:0.2rem;">Medio (50 a 99)</label>
+              <div class="input-group">
+                <span class="input-group-text" style="padding:0.4rem 0.6rem; font-size:0.8rem;">Bs</span>
+                <input type="number" id="new-prod-p2" step="0.5" class="form-control" placeholder="74" style="padding:0.4rem 0.6rem;" required />
+              </div>
+            </div>
+            <div>
+              <label style="font-size:0.78rem; font-weight:600; display:block; margin-bottom:0.2rem;">Volumen (100+)</label>
+              <div class="input-group">
+                <span class="input-group-text" style="padding:0.4rem 0.6rem; font-size:0.8rem;">Bs</span>
+                <input type="number" id="new-prod-p3" step="0.5" class="form-control" placeholder="68" style="padding:0.4rem 0.6rem;" required />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:0.4rem;">
+            <input type="checkbox" id="new-prod-publish" checked style="accent-color:var(--color-orange); width:16px; height:16px;" />
+            <label for="new-prod-publish" style="font-size:0.88rem; font-weight:600; cursor:pointer;">Publicar inmediatamente en Summa</label>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button type="button" class="btn btn-o-line" onclick="closeModal('modal-new-product')">Cancelar</button>
+            <button type="submit" class="btn btn-o">
+              <i class="bi bi-check-lg"></i> Guardar Producto
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: EDITAR STOCK -->
+  <div id="modal-edit-stock" class="modal-backdrop" style="display:none;">
+    <div class="modal-card" style="max-width:440px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <h3 style="font-size:1.15rem; margin:0;">Ajustar Stock en Almacén</h3>
+        <button class="btn-close-modal" onclick="closeModal('modal-edit-stock')">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <form onsubmit="handleSaveStock(event)">
+        <p id="edit-stock-subtitle" class="text-muted-s" style="margin-bottom:1rem; font-size:0.9rem; font-weight:600;"></p>
+        <div style="margin-bottom:1.25rem;">
+          <label class="form-label">Nueva cantidad disponible</label>
+          <input type="number" id="edit-stock-input" min="0" class="form-control" style="font-size:1.2rem; font-weight:700;" required />
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
+          <button type="button" class="btn btn-o-line" onclick="closeModal('modal-edit-stock')">Cancelar</button>
+          <button type="submit" class="btn btn-o">Guardar Stock</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .products-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .view-toggle-btn {
+      border: 0;
+      background: #fff;
+      color: var(--color-muted);
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .view-toggle-btn.active {
+      background: var(--color-orange);
+      color: #fff;
+    }
+
+    .product-card:hover {
+      border-color: var(--color-orange-line);
+      box-shadow: 0 4px 16px rgba(255, 107, 0, 0.08);
+    }
+
+    /* Modal styles */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 20, 8, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 2500;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+    }
+    .modal-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 580px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: modalIn 0.2s ease-out;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .btn-close-modal {
+      background: none;
+      border: 0;
+      color: var(--color-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 8px;
+    }
+    .btn-close-modal:hover {
+      background: var(--color-orange-tint);
+      color: var(--color-ink);
+    }
+
+    @media (min-width: 640px) {
+      .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      #toolbar-grid {
+        grid-template-columns: 1fr auto !important;
+      }
+    }
+    @media (min-width: 1100px) {
+      .products-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (min-width: 1400px) {
+      .products-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+
+  <script define:vars={{ INITIAL_PRODUCTS, STORAGE_KEY }}>
+    // Estado en cliente
+    let allProducts = [];
+    let currentCategory = 'all';
+    let currentSearch = '';
+    let currentStatus = 'all';
+    let currentSort = 'default';
+    let editingProductId = '';
+
+    // Cargar productos del localStorage
+    function loadProducts() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          allProducts = JSON.parse(stored);
+        } else {
+          allProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+          saveProducts();
+        }
+      } catch (e) {
+        allProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+      }
+    }
+
+    function saveProducts() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(allProducts));
+    }
+
+    // Filtrar solo productos de Distribuidora Andina para este proveedor
+    function getProviderProducts() {
+      return allProducts.filter(p => p.proveedor === 'Distribuidora Andina');
+    }
+
+    // Renderizar tarjetas y tabla
+    function render() {
+      const providerProducts = getProviderProducts();
+
+      // Actualizar stats
+      const totalCount = providerProducts.length;
+      const publishedCount = providerProducts.filter(p => p.publicado).length;
+      const demandsCount = providerProducts.filter(p => p.grupo && p.grupo.tieneGrupo).length;
+      const totalStock = providerProducts.reduce((acc, p) => acc + (Number(p.stock) || 0), 0);
+
+      document.getElementById('stat-total').textContent = totalCount.toString();
+      document.getElementById('stat-published').textContent = publishedCount.toString();
+      document.getElementById('stat-demands').textContent = demandsCount.toString();
+      document.getElementById('stat-stock').textContent = totalStock.toLocaleString();
+
+      // Filtrar según controles
+      let filtered = providerProducts.filter(p => {
+        const name = (p.nombre || '').toLowerCase();
+        const sku = (p.sku || '').toLowerCase();
+        const cat = p.categoria || '';
+        const stock = Number(p.stock) || 0;
+        const hasDemand = p.grupo && p.grupo.tieneGrupo;
+
+        const matchSearch = !currentSearch || name.includes(currentSearch) || sku.includes(currentSearch);
+        const matchCat = currentCategory === 'all' || cat === currentCategory;
+
+        let matchStatus = true;
+        if (currentStatus === 'published') matchStatus = p.publicado === true;
+        if (currentStatus === 'draft') matchStatus = p.publicado === false;
+        if (currentStatus === 'active') matchStatus = hasDemand;
+        if (currentStatus === 'low') matchStatus = stock < 50;
+
+        return matchSearch && matchCat && matchStatus;
+      });
+
+      // Ordenar
+      if (currentSort === 'stock-desc') {
+        filtered.sort((a, b) => (b.stock || 0) - (a.stock || 0));
+      } else if (currentSort === 'stock-asc') {
+        filtered.sort((a, b) => (a.stock || 0) - (b.stock || 0));
+      } else if (currentSort === 'name') {
+        filtered.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      }
+
+      // Renderizar Grid
+      const gridContainer = document.getElementById('grid-view-container');
+      const tableBody = document.getElementById('table-body-container');
+      const countEl = document.getElementById('results-count');
+      const noResults = document.getElementById('no-results-panel');
+      const tableContainer = document.getElementById('table-view-container');
+
+      if (countEl) {
+        countEl.textContent = `Mostrando ${filtered.length} ${filtered.length === 1 ? 'producto' : 'productos'} (${publishedCount} visibles para comerciantes)`;
+      }
+
+      if (filtered.length === 0) {
+        if (noResults) noResults.style.display = 'block';
+        if (gridContainer) gridContainer.innerHTML = '';
+        if (tableBody) tableBody.innerHTML = '';
+        return;
+      }
+
+      if (noResults) noResults.style.display = 'none';
+
+      // HTML Tarjetas
+      gridContainer.innerHTML = filtered.map(p => {
+        const isPublished = p.publicado !== false;
+        const isLowStock = p.stock < 50;
+        const hasDemand = p.grupo && p.grupo.tieneGrupo;
+
+        return `
+          <div class="panel product-card" style="display:flex; flex-direction:column; height:100%; position:relative; ${!isPublished ? 'opacity:0.82; border-style:dashed;' : ''}">
+            
+            <!-- Header Tarjeta -->
+            <div style="display:flex; gap:0.75rem; align-items:flex-start; margin-bottom:0.75rem;">
+              <div class="tile lg ${p.tileCls || 't2'}" style="flex-shrink:0;">${p.tile || '📦'}</div>
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:0.4rem; margin-bottom:0.25rem;">
+                  <span class="badge-s ${isPublished ? 'b-ok' : 'b-tint'}" style="font-size:0.72rem; padding:0.15rem 0.5rem;">
+                    ${isPublished ? '<i class="bi bi-broadcast"></i> Publicado' : '<i class="bi bi-eye-slash"></i> Pausado'}
+                  </span>
+                  <span style="font-size:0.75rem; font-weight:700; color:var(--color-muted); background:var(--color-orange-tint); padding:0.15rem 0.4rem; border-radius:6px;">
+                    ${p.sku || 'SKU'}
+                  </span>
+                </div>
+                <h3 style="font-size:1.05rem; margin:0 0 0.2rem 0; line-height:1.25;">
+                  ${p.nombre}
+                </h3>
+                <small class="text-muted-s" style="font-size:0.82rem;">${p.presentacion || ''}</small>
+              </div>
+            </div>
+
+            <!-- Stock Almacén -->
+            <div style="background:var(--color-orange-tint); border-radius:12px; padding:0.5rem 0.75rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+              <div style="display:flex; align-items:center; gap:0.4rem;">
+                <i class="bi ${isLowStock ? 'bi-exclamation-triangle-fill' : 'bi-check-circle-fill'}" style="color:${isLowStock ? '#D94F00' : 'var(--color-ok)'};"></i>
+                <span style="font-size:0.85rem; font-weight:600;">Stock en almacén:</span>
+              </div>
+              <div style="font-weight:800; font-size:0.95rem;">
+                ${p.stock} <span style="font-size:0.8rem; font-weight:500; color:var(--color-muted);">${p.unidad}</span>
+              </div>
+            </div>
+
+            <!-- Escala de Precios -->
+            <div style="margin-bottom:0.75rem;">
+              <div style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--color-muted); margin-bottom:0.35rem;">
+                Escala de precios por volumen
+              </div>
+              <table class="price-table">
+                <tbody>
+                  ${(p.escalas || []).map(esc => `
+                    <tr class="${esc.highlight ? 'active-row' : ''}">
+                      <td>${esc.tramo}</td>
+                      <td class="${esc.highlight ? 'price-highlight' : ''}" style="${esc.highlight ? '' : 'text-align:right; font-weight:700;'}">
+                        ${esc.precio}
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Demanda en Summa -->
+            <div style="margin-bottom:0.75rem; margin-top:auto;">
+              ${hasDemand ? `
+                <a href="${p.grupo.link || '/proveedor/ofertar'}" style="text-decoration:none;">
+                  <span class="badge-s ${p.grupo.badgeCls || 'b-o'}" style="width:100%; justify-content:center; padding:0.4rem 0.6rem; cursor:pointer;">
+                    <i class="bi bi-people-fill"></i> ${p.grupo.texto}
+                  </span>
+                </a>
+              ` : `
+                <span class="badge-s b-tint" style="width:100%; justify-content:center; padding:0.4rem 0.6rem;">
+                  <i class="bi bi-info-circle"></i> Sin grupos abiertos todavía
+                </span>
+              `}
+            </div>
+
+            <!-- Acciones -->
+            <div style="display:flex; gap:0.4rem; padding-top:0.5rem; border-top:1px dashed var(--color-orange-line); flex-wrap:wrap;">
+              <button 
+                class="btn btn-o-line btn-sm" 
+                style="flex:1; justify-content:center;" 
+                onclick="window.editProductStock('${p.id}', '${p.nombre.replace(/'/g, "\\'")}', ${p.stock})"
+              >
+                <i class="bi bi-pencil-square"></i> Stock
+              </button>
+              
+              <button 
+                class="btn ${isPublished ? 'btn-o-line' : 'btn-o'} btn-sm" 
+                style="flex:1; justify-content:center;" 
+                onclick="window.togglePublish('${p.id}')"
+                title="${isPublished ? 'Pausar visibilidad para comerciantes' : 'Publicar en catálogo'}"
+              >
+                <i class="bi ${isPublished ? 'bi-eye-slash' : 'bi-broadcast'}"></i> ${isPublished ? 'Pausar' : 'Publicar'}
+              </button>
+
+              ${hasDemand && p.grupo.link ? `
+                <a href="${p.grupo.link}" class="btn btn-o btn-sm" style="padding-left:0.6rem; padding-right:0.6rem;" title="Ver grupos / ofertas">
+                  <i class="bi bi-arrow-right"></i>
+                </a>
+              ` : ''}
+            </div>
+
+          </div>
+        `;
+      }).join('');
+
+      // HTML Tabla
+      tableBody.innerHTML = filtered.map(p => {
+        const isPublished = p.publicado !== false;
+        const isLowStock = p.stock < 50;
+        const hasDemand = p.grupo && p.grupo.tieneGrupo;
+        const pBase = p.escalas && p.escalas[0] ? p.escalas[0].precio : 'Bs --';
+        const pMax = p.escalas && p.escalas.length ? p.escalas[p.escalas.length - 1].precio : 'Bs --';
+
+        return `
+          <tr class="product-row">
+            <td style="padding-left:1.25rem;">
+              <div style="display:flex; align-items:center; gap:0.75rem;">
+                <div class="tile ${p.tileCls || 't2'}" style="width:40px; height:40px; font-size:1.3rem; border-radius:10px;">${p.tile || '📦'}</div>
+                <div>
+                  <div style="font-weight:700; font-size:0.95rem;">${p.nombre}</div>
+                  <div style="font-size:0.8rem; color:var(--color-muted);">SKU: <b>${p.sku}</b> · ${p.presentacion}</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="badge-s b-tint">${p.categoriaLabel || p.categoria}</span></td>
+            <td>
+              <span class="badge-s ${isPublished ? 'b-ok' : 'b-tint'}" style="font-size:0.75rem;">
+                ${isPublished ? 'Publicado' : 'Pausado'}
+              </span>
+            </td>
+            <td>
+              <div style="font-weight:700; font-size:0.95rem;">
+                ${p.stock} <span style="font-size:0.8rem; font-weight:normal; color:var(--color-muted);">${p.unidad}</span>
+              </div>
+              ${isLowStock ? '<span class="badge-s b-warn" style="font-size:0.7rem; padding:0.1rem 0.4rem;">Stock bajo</span>' : ''}
+            </td>
+            <td style="font-weight:600;">${pBase}</td>
+            <td><span class="money" style="color:var(--color-orange-deep); font-size:1.1rem;">${pMax}</span></td>
+            <td>
+              ${hasDemand ? `
+                <span class="badge-s ${p.grupo.badgeCls || 'b-o'}" style="font-size:0.76rem;"><i class="bi bi-people-fill"></i> Activa</span>
+              ` : `
+                <span class="badge-s b-tint" style="font-size:0.76rem;">Sin demanda</span>
+              `}
+            </td>
+            <td style="text-align:right; padding-right:1.25rem;">
+              <div style="display:inline-flex; gap:0.35rem;">
+                <button 
+                  class="btn btn-o-line btn-sm" 
+                  title="Ajustar stock"
+                  onclick="window.editProductStock('${p.id}', '${p.nombre.replace(/'/g, "\\'")}', ${p.stock})"
+                >
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button 
+                  class="btn btn-o-line btn-sm" 
+                  title="${isPublished ? 'Pausar' : 'Publicar'}"
+                  onclick="window.togglePublish('${p.id}')"
+                >
+                  <i class="bi ${isPublished ? 'bi-eye-slash' : 'bi-broadcast'}"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Funciones de interacción
+    window.handleSearch = function() {
+      const input = document.getElementById('search-input');
+      currentSearch = (input?.value || '').trim().toLowerCase();
+      render();
+    };
+
+    window.filterCategory = function(el, cat) {
+      document.querySelectorAll('#category-chips .chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      currentCategory = cat;
+      render();
+    };
+
+    window.handleFilterChange = function() {
+      const select = document.getElementById('status-filter');
+      currentStatus = select?.value || 'all';
+      render();
+    };
+
+    window.handleSortChange = function() {
+      const select = document.getElementById('sort-select');
+      currentSort = select?.value || 'default';
+      render();
+    };
+
+    window.resetFilters = function() {
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) searchInput.value = '';
+      currentSearch = '';
+
+      const statusSelect = document.getElementById('status-filter');
+      if (statusSelect) statusSelect.value = 'all';
+      currentStatus = 'all';
+
+      const sortSelect = document.getElementById('sort-select');
+      if (sortSelect) sortSelect.value = 'default';
+      currentSort = 'default';
+
+      const firstChip = document.querySelector('#category-chips .chip');
+      if (firstChip) window.filterCategory(firstChip, 'all');
+      else render();
+    };
+
+    window.switchView = function(view) {
+      const btnGrid = document.getElementById('btn-view-grid');
+      const btnTable = document.getElementById('btn-view-table');
+      const gridContainer = document.getElementById('grid-view-container');
+      const tableContainer = document.getElementById('table-view-container');
+
+      if (view === 'grid') {
+        btnGrid?.classList.add('active');
+        btnTable?.classList.remove('active');
+        if (gridContainer) gridContainer.style.display = 'grid';
+        if (tableContainer) tableContainer.style.display = 'none';
+      } else {
+        btnTable?.classList.add('active');
+        btnGrid?.classList.remove('active');
+        if (gridContainer) gridContainer.style.display = 'none';
+        if (tableContainer) tableContainer.style.display = 'block';
+      }
+    };
+
+    window.openNewProductModal = function() {
+      const m = document.getElementById('modal-new-product');
+      if (m) m.style.display = 'grid';
+    };
+
+    window.closeModal = function(id) {
+      const m = document.getElementById(id);
+      if (m) m.style.display = 'none';
+    };
+
+    window.editProductStock = function(id, name, stock) {
+      editingProductId = id;
+      const modal = document.getElementById('modal-edit-stock');
+      const sub = document.getElementById('edit-stock-subtitle');
+      const input = document.getElementById('edit-stock-input');
+
+      if (sub) sub.textContent = name;
+      if (input) input.value = stock.toString();
+      if (modal) modal.style.display = 'grid';
+    };
+
+    window.handleSaveStock = function(e) {
+      e.preventDefault();
+      const input = document.getElementById('edit-stock-input');
+      const newStock = parseInt(input?.value || '0', 10);
+
+      const prod = allProducts.find(p => p.id === editingProductId);
+      if (prod) {
+        prod.stock = newStock;
+        prod.stockStatus = newStock < 50 ? 'low' : 'ok';
+        saveProducts();
+        render();
+        window.closeModal('modal-edit-stock');
+        window.toast(`Stock de "${prod.nombre}" actualizado a ${newStock} ${prod.unidad}.`);
+      }
+    };
+
+    window.togglePublish = function(id) {
+      const prod = allProducts.find(p => p.id === id);
+      if (prod) {
+        prod.publicado = !prod.publicado;
+        saveProducts();
+        render();
+        if (prod.publicado) {
+          window.toast(`"${prod.nombre}" ahora está PUBLICADO y visible para comerciantes.`);
+        } else {
+          window.toast(`"${prod.nombre}" fue PAUSADO (no aparecerá a comerciantes).`);
+        }
+      }
+    };
+
+    window.handleCreateProduct = function(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-prod-name').value;
+      const cat = document.getElementById('new-prod-cat').value;
+      const sku = document.getElementById('new-prod-sku').value || `SKU-${Date.now().toString().slice(-4)}`;
+      const pres = document.getElementById('new-prod-pres').value;
+      const stock = parseInt(document.getElementById('new-prod-stock').value || '100', 10);
+      const unit = document.getElementById('new-prod-unit').value;
+      const p1 = document.getElementById('new-prod-p1').value;
+      const p2 = document.getElementById('new-prod-p2').value;
+      const p3 = document.getElementById('new-prod-p3').value;
+      const publish = document.getElementById('new-prod-publish').checked;
+
+      const catLabels = {
+        aceites: 'Aceites y Grasas',
+        granos: 'Granos y Harinas',
+        azucar: 'Azúcar y Dulces',
+        pastas: 'Pastas y Fideos',
+        lacteos: 'Lácteos',
+        limpieza: 'Limpieza',
+        bebidas: 'Bebidas'
+      };
+
+      const catTiles = {
+        aceites: { icon: '🛢️', cls: 't2' },
+        granos: { icon: '🌾', cls: 't4' },
+        azucar: { icon: '🍬', cls: 't6' },
+        pastas: { icon: '🍝', cls: 't5' },
+        lacteos: { icon: '🥛', cls: 't3' },
+        limpieza: { icon: '🧼', cls: 't1' },
+        bebidas: { icon: '🥤', cls: 't4' }
+      };
+
+      const tileInfo = catTiles[cat] || { icon: '📦', cls: 't2' };
+
+      const newProd = {
+        id: `prod-${Date.now()}`,
+        nombre: name,
+        sku: sku,
+        categoria: cat,
+        categoriaLabel: catLabels[cat] || cat,
+        proveedor: 'Distribuidora Andina',
+        tile: tileInfo.icon,
+        tileCls: tileInfo.cls,
+        presentacion: pres,
+        stock: stock,
+        unidad: unit,
+        stockStatus: stock < 50 ? 'low' : 'ok',
+        rating: 5.0,
+        publicado: publish,
+        escalas: [
+          { tramo: `1 a 49 ${unit}`, precio: `Bs ${p1}` },
+          { tramo: `50 a 99 ${unit}`, precio: `Bs ${p2}` },
+          { tramo: `100 o más`, precio: `Bs ${p3}`, highlight: true }
+        ],
+        grupo: {
+          tieneGrupo: false,
+          texto: 'Sin grupo abierto todavía',
+          badgeCls: 'b-tint',
+          link: '#'
+        }
+      };
+
+      allProducts.unshift(newProd);
+      saveProducts();
+      render();
+      window.closeModal('modal-new-product');
+      document.getElementById('new-product-form')?.reset();
+      window.toast(`¡Producto "${name}" guardado ${publish ? 'y publicado' : 'como borrador'}!`);
+    };
+
+    window.resetToInitialData = function() {
+      if (confirm('¿Deseas restablecer el catálogo a los datos originales de la demo?')) {
+        allProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+        saveProducts();
+        render();
+        window.toast('Catálogo restablecido correctamente.');
+      }
+    };
+
+    // Inicialización al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProducts();
+      render();
+    });
+    // Ejecutar de inmediato por si el DOM ya está listo
+    loadProducts();
+    render();
+  </script>
+
+</AppLayout>

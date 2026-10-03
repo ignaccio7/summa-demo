@@ -1,48 +1,77 @@
 ---
 // proveedor/index.astro – Panel del Proveedor (p-home)
-import AppLayout from '../../layouts/AppLayout.astro';
+import AppLayout from "../../layouts/AppLayout.astro";
 ---
-<AppLayout pageTitle="Panel del proveedor" role="proveedor">
 
+<AppLayout pageTitle="Panel del proveedor" role="proveedor">
   <!-- Hero -->
   <div class="hero-c" style="margin-bottom:1.5rem;">
-    <div style="display:grid; grid-template-columns:1fr; gap:1rem; position:relative; z-index:1;">
+    <div
+      style="display:grid; grid-template-columns:1fr; gap:1rem; position:relative; z-index:1;"
+    >
       <div>
-        <h2 style="font-family:var(--font-display); font-size:clamp(1.6rem,3.2vw,2.3rem); font-weight:800; letter-spacing:-.035em; margin-bottom:0.5rem;">
+        <h2
+          style="font-family:var(--font-display); font-size:clamp(1.6rem,3.2vw,2.3rem); font-weight:800; letter-spacing:-.035em; margin-bottom:0.5rem;"
+        >
           Distribuidora Andina tiene 5 grupos esperando una oferta.
         </h2>
-        <p style="margin-bottom:1rem; opacity:0.9;">Cada grupo ya reunió su volumen. Solo falta tu precio.</p>
+        <p style="margin-bottom:1rem; opacity:0.9;">
+          Cada grupo ya reunió su volumen. Solo falta tu precio.
+        </p>
         <a href="/proveedor/ofertar" class="btn btn-white">Ver oportunidades</a>
       </div>
       <div>
-        <div style="background:#fff; color:var(--color-ink); border-radius:16px; padding:1.25rem;">
-          <div style="font-size:0.88rem;" class="text-muted-s">Ventas de septiembre</div>
-          <div class="money" style="font-size:2.3rem; color:var(--color-orange-deep);">Bs 48.300</div>
-          <div style="font-size:0.88rem; color:var(--color-ok);"><b>+22%</b> frente a agosto</div>
+        <div
+          style="background:#fff; color:var(--color-ink); border-radius:16px; padding:1.25rem;"
+        >
+          <div style="font-size:0.88rem;" class="text-muted-s">
+            Ventas de septiembre
+          </div>
+          <div
+            class="money"
+            style="font-size:2.3rem; color:var(--color-orange-deep);"
+          >
+            Bs 48.300
+          </div>
+          <div style="font-size:0.88rem; color:var(--color-ok);">
+            <b>+22%</b> frente a agosto
+          </div>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Stats -->
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.5rem;">
+  <div
+    style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.5rem;"
+  >
     <div class="stat">
-      <span class="ico" style="margin-bottom:0.5rem; display:block;"><i class="bi bi-bullseye"></i></span>
+      <span class="ico" style="margin-bottom:0.5rem; display:block;"
+        ><i class="bi bi-bullseye"></i></span
+      >
       <div class="n">5</div>
       <small class="text-muted-s">oportunidades nuevas</small>
     </div>
     <div class="stat">
-      <span class="ico" style="margin-bottom:0.5rem; display:block;"><i class="bi bi-send-fill"></i></span>
+      <span class="ico" style="margin-bottom:0.5rem; display:block;"
+        ><i class="bi bi-send-fill"></i></span
+      >
       <div class="n">2</div>
       <small class="text-muted-s">ofertas pendientes</small>
     </div>
     <div class="stat">
-      <span class="ico" style="margin-bottom:0.5rem; display:block;"><i class="bi bi-box-seam-fill"></i></span>
+      <span class="ico" style="margin-bottom:0.5rem; display:block;"
+        ><i class="bi bi-box-seam-fill"></i></span
+      >
       <div class="n">3</div>
       <small class="text-muted-s">pedidos por preparar</small>
     </div>
     <div class="stat solid">
-      <span class="ico" style="margin-bottom:0.5rem; display:block; background:rgba(255,255,255,.12); color:var(--color-orange-sun);"><i class="bi bi-patch-check-fill"></i></span>
+      <span
+        class="ico"
+        style="margin-bottom:0.5rem; display:block; background:rgba(255,255,255,.12); color:var(--color-orange-sun);"
+        ><i class="bi bi-patch-check-fill"></i></span
+      >
       <div class="n">96%</div>
       <small style="opacity:0.75;">cumplimiento de entregas</small>
     </div>
@@ -50,10 +79,11 @@ import AppLayout from '../../layouts/AppLayout.astro';
 
   <!-- Tabla de grupos + Gráfico -->
   <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
-
     <!-- Tabla de grupos -->
     <div>
-      <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">Grupos que buscan tus productos</h3>
+      <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">
+        Grupos que buscan tus productos
+      </h3>
       <div class="panel" style="padding:0; overflow:hidden;">
         <div style="overflow-x:auto;">
           <table class="summa-table">
@@ -68,32 +98,76 @@ import AppLayout from '../../layouts/AppLayout.astro';
             </thead>
             <tbody>
               <tr>
-                <td style="padding-left:1rem;"><b>Aceite Fino 900 ml</b><div style="font-size:0.85rem;" class="text-muted-s">5 comerciantes</div></td>
+                <td style="padding-left:1rem;"
+                  ><b>Aceite Fino 800 ml</b><div
+                    style="font-size:0.85rem;"
+                    class="text-muted-s"
+                  >
+                    5 comerciantes
+                  </div></td
+                >
                 <td>100 cajas</td>
                 <td>La Paz</td>
                 <td><span class="badge-s b-o">Mañana</span></td>
-                <td><a href="/proveedor/ofertar" class="btn btn-o btn-sm">Ofertar</a></td>
+                <td
+                  ><a href="/proveedor/ofertar" class="btn btn-o btn-sm"
+                    >Ofertar</a
+                  ></td
+                >
               </tr>
               <tr>
-                <td style="padding-left:1rem;"><b>Arroz Grano de Oro</b><div style="font-size:0.85rem;" class="text-muted-s">9 comerciantes</div></td>
+                <td style="padding-left:1rem;"
+                  ><b>Arroz Grano de Oro</b><div
+                    style="font-size:0.85rem;"
+                    class="text-muted-s"
+                  >
+                    9 comerciantes
+                  </div></td
+                >
                 <td>62 bolsas</td>
                 <td>Rodríguez</td>
                 <td><span class="badge-s b-tint">2 días</span></td>
-                <td><a href="/proveedor/ofertar" class="btn btn-o-line btn-sm">Ofertar</a></td>
+                <td
+                  ><a href="/proveedor/ofertar" class="btn btn-o-line btn-sm"
+                    >Ofertar</a
+                  ></td
+                >
               </tr>
               <tr>
-                <td style="padding-left:1rem;"><b>Azúcar Guabirá</b><div style="font-size:0.85rem;" class="text-muted-s">7 comerciantes</div></td>
+                <td style="padding-left:1rem;"
+                  ><b>Azúcar Guabirá</b><div
+                    style="font-size:0.85rem;"
+                    class="text-muted-s"
+                  >
+                    7 comerciantes
+                  </div></td
+                >
                 <td>140 quintales</td>
                 <td>El Alto</td>
                 <td><span class="badge-s b-tint">4 días</span></td>
-                <td><a href="/proveedor/ofertar" class="btn btn-o-line btn-sm">Ofertar</a></td>
+                <td
+                  ><a href="/proveedor/ofertar" class="btn btn-o-line btn-sm"
+                    >Ofertar</a
+                  ></td
+                >
               </tr>
               <tr>
-                <td style="padding-left:1rem;"><b>Atún Sardimar</b><div style="font-size:0.85rem;" class="text-muted-s">4 comerciantes</div></td>
+                <td style="padding-left:1rem;"
+                  ><b>Atún Sardimar</b><div
+                    style="font-size:0.85rem;"
+                    class="text-muted-s"
+                  >
+                    4 comerciantes
+                  </div></td
+                >
                 <td>21 cajas</td>
                 <td>Villa Fátima</td>
                 <td><span class="badge-s b-tint">9 días</span></td>
-                <td><a href="/proveedor/ofertar" class="btn btn-o-line btn-sm">Ofertar</a></td>
+                <td
+                  ><a href="/proveedor/ofertar" class="btn btn-o-line btn-sm"
+                    >Ofertar</a
+                  ></td
+                >
               </tr>
             </tbody>
           </table>
@@ -103,38 +177,68 @@ import AppLayout from '../../layouts/AppLayout.astro';
 
     <!-- Gráfico + Pagos -->
     <div>
-      <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">Ventas por semana</h3>
+      <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">
+        Ventas por semana
+      </h3>
       <div class="panel" style="margin-bottom:1.25rem;">
-        <div class="bars" style="margin: 2.5rem 0 2rem;" role="img" aria-label="Ventas por semana: 8,4; 11,2; 9,6 y 19,1 miles de bolivianos">
-          <div class="bar" style="height:44%;"><em>8,4 mil</em><span>Sem 1</span></div>
-          <div class="bar" style="height:59%;"><em>11,2 mil</em><span>Sem 2</span></div>
-          <div class="bar" style="height:50%;"><em>9,6 mil</em><span>Sem 3</span></div>
-          <div class="bar hi" style="height:100%;"><em>19,1 mil</em><span>Sem 4</span></div>
+        <div
+          class="bars"
+          style="margin: 2.5rem 0 2rem;"
+          role="img"
+          aria-label="Ventas por semana: 8,4; 11,2; 9,6 y 19,1 miles de bolivianos"
+        >
+          <div class="bar" style="height:44%;">
+            <em>8,4 mil</em><span>Sem 1</span>
+          </div>
+          <div class="bar" style="height:59%;">
+            <em>11,2 mil</em><span>Sem 2</span>
+          </div>
+          <div class="bar" style="height:50%;">
+            <em>9,6 mil</em><span>Sem 3</span>
+          </div>
+          <div class="bar hi" style="height:100%;">
+            <em>19,1 mil</em><span>Sem 4</span>
+          </div>
         </div>
       </div>
 
-      <h3 style="font-size:1.05rem; margin-bottom:0.75rem;">Pagos por confirmar</h3>
+      <h3 style="font-size:1.05rem; margin-bottom:0.75rem;">
+        Pagos por confirmar
+      </h3>
       <div class="panel">
-        <div style="display:flex; align-items:center; gap:0.75rem; padding-bottom:0.75rem; margin-bottom:0.75rem; border-bottom:2px solid var(--color-orange-tint);">
+        <div
+          style="display:flex; align-items:center; gap:0.75rem; padding-bottom:0.75rem; margin-bottom:0.75rem; border-bottom:2px solid var(--color-orange-tint);"
+        >
           <div class="avatar av3">RC</div>
           <div style="flex:1; line-height:1.2;">
             <b>Rosa Condori</b>
-            <div style="font-size:0.85rem;" class="text-muted-s">Azúcar, 30 quintales</div>
+            <div style="font-size:0.85rem;" class="text-muted-s">
+              Azúcar, 30 quintales
+            </div>
           </div>
           <div style="text-align:right;">
             <div class="money">Bs 11.550</div>
-            <button class="btn btn-o btn-sm" style="margin-top:0.25rem;" onclick="window.toast('Pago de Rosa Condori confirmado')">Confirmar</button>
+            <button
+              class="btn btn-o btn-sm"
+              style="margin-top:0.25rem;"
+              onclick="window.toast('Pago de Rosa Condori confirmado')"
+              >Confirmar</button
+            >
           </div>
         </div>
         <div style="display:flex; align-items:center; gap:0.75rem;">
           <div class="avatar av5">EA</div>
           <div style="flex:1; line-height:1.2;">
             <b>Elena Apaza</b>
-            <div style="font-size:0.85rem;" class="text-muted-s">Azúcar, 15 quintales</div>
+            <div style="font-size:0.85rem;" class="text-muted-s">
+              Azúcar, 15 quintales
+            </div>
           </div>
           <div style="text-align:right;">
             <div class="money">Bs 5.775</div>
-            <span class="badge-s b-warn" style="margin-top:0.25rem;">Sin comprobante</span>
+            <span class="badge-s b-warn" style="margin-top:0.25rem;"
+              >Sin comprobante</span
+            >
           </div>
         </div>
       </div>
@@ -143,9 +247,15 @@ import AppLayout from '../../layouts/AppLayout.astro';
 
   <style>
     @media (min-width: 992px) {
-      .hero-c > div { grid-template-columns: 8fr 4fr !important; }
-      div[style*="grid-template-columns:1fr 1fr"]:has(.stat) { grid-template-columns: repeat(4,1fr) !important; }
-      div[style*="gap:1.5rem"]:has(.summa-table) { grid-template-columns: 7fr 5fr !important; }
+      .hero-c > div {
+        grid-template-columns: 8fr 4fr !important;
+      }
+      div[style*="grid-template-columns:1fr 1fr"]:has(.stat) {
+        grid-template-columns: repeat(4, 1fr) !important;
+      }
+      div[style*="gap:1.5rem"]:has(.summa-table) {
+        grid-template-columns: 7fr 5fr !important;
+      }
     }
   </style>
 </AppLayout>

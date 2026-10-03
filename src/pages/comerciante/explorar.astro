@@ -1,198 +1,171 @@
 ---
-// comerciante/explorar.astro – Explorar productos (c-explore)
+// comerciante/explorar.astro – Explorar productos del mercado Summa
 import AppLayout from '../../layouts/AppLayout.astro';
+import { INITIAL_PRODUCTS, STORAGE_KEY } from '../../data/products';
 ---
+
 <AppLayout pageTitle="Explorar" role="comerciante">
 
+  <!-- Header descriptivo -->
+  <div style="margin-bottom:1rem;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.5rem;">
+      <div>
+        <h2 style="font-family:var(--font-display); font-size:clamp(1.4rem,2.5vw,1.85rem); font-weight:800; letter-spacing:-.03em; margin:0 0 0.2rem 0;">
+          Explorar Productos al por Mayor
+        </h2>
+        <p style="margin:0; color:var(--color-muted); font-size:0.92rem;">
+          Junta volumen con otros comerciantes y desbloquea el mejor precio de los distribuidores mayoristas.
+        </p>
+      </div>
+      <a href="/comerciante/grupo" class="btn btn-o-line btn-sm" style="align-self:center;">
+        <i class="bi bi-people-fill"></i> Ver mis grupos activos
+      </a>
+    </div>
+  </div>
+
   <!-- Búsqueda y filtros -->
-  <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; align-items:center; margin-bottom:1rem;">
+  <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; align-items:center; margin-bottom:1rem;" id="search-filter-row">
     <div class="input-group" style="max-width:100%;">
       <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input class="form-control" placeholder="Busca aceite, arroz, detergente..." value="aceite" id="search-input" style="border-radius:0; border-left:0;">
+      <input 
+        class="form-control" 
+        placeholder="Busca aceite, arroz, azúcar, distribuidora andina..." 
+        id="search-input" 
+        oninput="handleSearch()"
+        style="border-radius:0; border-left:0;"
+      />
+      <button class="btn btn-o" onclick="handleSearch()" style="border-radius:0 12px 12px 0;">
+        Buscar
+      </button>
     </div>
-    <div style="display:flex; gap:0.5rem;">
-      <select class="form-select" aria-label="Ciudad">
-        <option>La Paz</option>
-        <option>El Alto</option>
-        <option>Cochabamba</option>
+
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+      <select class="form-select" id="city-select" onchange="handleFilterChange()" aria-label="Ciudad" style="min-width:130px; flex:1;">
+        <option value="all">Todas las ciudades</option>
+        <option value="lp" selected>La Paz</option>
+        <option value="ea">El Alto</option>
+        <option value="cb">Cochabamba</option>
+        <option value="sc">Santa Cruz</option>
       </select>
-      <select class="form-select" aria-label="Ordenar">
-        <option>Más relevante</option>
-        <option>Menor precio</option>
-        <option>Mejor calificado</option>
+      <select class="form-select" id="sort-select" onchange="handleSortChange()" aria-label="Ordenar" style="min-width:150px; flex:1;">
+        <option value="relevant">Más relevante</option>
+        <option value="price-asc">Menor precio volumen</option>
+        <option value="rating">Mejor calificado</option>
+        <option value="groups">Con grupos abiertos</option>
       </select>
     </div>
   </div>
 
   <!-- Chips de categoría -->
   <div class="chips" style="margin-bottom:1.25rem;" id="chips">
-    <button class="chip active" onclick="filterChip(this)">Todo</button>
-    <button class="chip" onclick="filterChip(this)">Abarrotes</button>
-    <button class="chip" onclick="filterChip(this)">Limpieza</button>
-    <button class="chip" onclick="filterChip(this)">Bebidas</button>
-    <button class="chip" onclick="filterChip(this)">Ferretería</button>
-    <button class="chip" onclick="filterChip(this)">Papelería</button>
-    <button class="chip" onclick="filterChip(this)">Con precio por volumen</button>
-    <button class="chip" onclick="filterChip(this)">Con grupo abierto</button>
+    <button class="chip active" data-filter="all" onclick="filterChip(this, 'all')">Todo</button>
+    <button class="chip" data-filter="andina" onclick="filterChip(this, 'andina')">
+      <i class="bi bi-shield-check"></i> Distribuidora Andina
+    </button>
+    <button class="chip" data-filter="aceites" onclick="filterChip(this, 'aceites')">Aceites</button>
+    <button class="chip" data-filter="granos" onclick="filterChip(this, 'granos')">Granos y Harinas</button>
+    <button class="chip" data-filter="azucar" onclick="filterChip(this, 'azucar')">Azúcar</button>
+    <button class="chip" data-filter="pastas" onclick="filterChip(this, 'pastas')">Pastas</button>
+    <button class="chip" data-filter="lacteos" onclick="filterChip(this, 'lacteos')">Lácteos</button>
+    <button class="chip" data-filter="limpieza" onclick="filterChip(this, 'limpieza')">Limpieza</button>
+    <button class="chip" data-filter="bebidas" onclick="filterChip(this, 'bebidas')">Bebidas</button>
+    <button class="chip" data-filter="with-group" onclick="filterChip(this, 'with-group')">🔥 Con grupo abierto</button>
   </div>
 
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
-    <h2 style="font-size:1.1rem; margin:0;">6 productos encontrados</h2>
-    <small class="text-muted-s">Precios por caja, en bolivianos</small>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.85rem;">
+    <h3 style="font-size:1.05rem; margin:0; font-weight:700;" id="products-count-title">
+      Cargando productos...
+    </h3>
+    <small class="text-muted-s">Precios en bolivianos (Bs) por caja o quintal</small>
   </div>
 
-  <!-- Grid de productos -->
-  <div style="display:grid; grid-template-columns:1fr; gap:0.75rem;" class="products-grid">
+  <!-- Grid de productos (Renderizado dinámico desde el store) -->
+  <div style="display:grid; grid-template-columns:1fr; gap:0.75rem;" class="products-grid" id="merchant-products-grid">
+  </div>
 
-    <!-- Aceite Fino -->
-    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
-      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
-        <div class="tile lg t2">🛢️</div>
-        <div>
-          <div style="font-weight:700;">Aceite Fino 900 ml</div>
-          <small class="text-muted-s">Caja x12 · Distribuidora Andina</small>
-          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,8</div>
+  <!-- Estado vacío cuando no hay resultados -->
+  <div id="no-results-panel" class="panel flat" style="display:none; text-align:center; padding:3rem 1.5rem; margin-bottom:2rem;">
+    <div style="font-size:3rem; margin-bottom:0.75rem;">🛒</div>
+    <h3 style="font-size:1.3rem; margin-bottom:0.4rem;">No encontramos ese producto</h3>
+    <p class="text-muted-s" style="margin-bottom:1.2rem; max-width:420px; margin-left:auto; margin-right:auto;">
+      Prueba buscando con otro término o selecciona otra categoría en los filtros superiores.
+    </p>
+    <button class="btn btn-o-line" onclick="resetFilters()">
+      <i class="bi bi-arrow-clockwise"></i> Ver todos los productos
+    </button>
+  </div>
+
+  <!-- MODAL: CREAR GRUPO DE COMPRA -->
+  <div id="modal-create-group" class="modal-backdrop" style="display:none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div class="ico" style="width:36px; height:36px; font-size:1.1rem;"><i class="bi bi-people-fill"></i></div>
+          <h3 style="font-size:1.2rem; margin:0;">Crear Grupo de Compra Colectiva</h3>
         </div>
+        <button class="btn-close-modal" onclick="closeGroupModal()">
+          <i class="bi bi-x-lg"></i>
+        </button>
       </div>
-      <table class="price-table" style="margin-bottom:0.75rem;">
-        <tbody>
-          <tr><td>1 a 49 cajas</td><td style="text-align:right; font-weight:700;">Bs 80</td></tr>
-          <tr><td>50 a 99 cajas</td><td style="text-align:right; font-weight:700;">Bs 74</td></tr>
-          <tr class="active-row"><td>100 o más</td><td class="price-highlight">Bs 68</td></tr>
-        </tbody>
-      </table>
-      <span class="badge-s b-ok" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 100 de 100</span>
-      <div style="display:flex; gap:0.5rem; margin-top:auto;">
-        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 caja de aceite')">Comprar</button>
-        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Ver grupo</a>
-      </div>
-    </div>
 
-    <!-- Arroz -->
-    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
-      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
-        <div class="tile lg t1">🍚</div>
-        <div>
-          <div style="font-weight:700;">Arroz Grano de Oro</div>
-          <small class="text-muted-s">Bolsa 50 kg · Mayorista El Sol</small>
-          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,6</div>
+      <p class="text-muted-s" style="font-size:0.9rem; margin-bottom:1rem;">
+        Inicia un grupo para desbloquear el precio mayorista. Otros comerciantes de tu zona podrán unirse con su pedido.
+      </p>
+
+      <form onsubmit="handleConfirmCreateGroup(event)">
+        <!-- Info producto seleccionado -->
+        <div class="panel-tint" style="display:flex; gap:0.75rem; align-items:center; padding:0.9rem; margin-bottom:1rem;">
+          <div class="tile t2" id="group-modal-tile" style="width:50px; height:50px; font-size:1.6rem; border-radius:12px;">🛢️</div>
+          <div>
+            <div style="font-weight:700; font-size:1rem;" id="group-modal-name">Producto</div>
+            <small class="text-muted-s" id="group-modal-prov">Distribuidor</small>
+            <div style="font-size:0.85rem; font-weight:700; color:var(--color-orange-deep); margin-top:0.2rem;" id="group-modal-target-price">
+              Precio meta: Bs --
+            </div>
+          </div>
         </div>
-      </div>
-      <table class="price-table" style="margin-bottom:0.75rem;">
-        <tbody>
-          <tr><td>1 a 49 bolsas</td><td style="text-align:right; font-weight:700;">Bs 305</td></tr>
-          <tr><td>50 a 99 bolsas</td><td style="text-align:right; font-weight:700;">Bs 292</td></tr>
-          <tr class="active-row"><td>100 o más</td><td class="price-highlight">Bs 279</td></tr>
-        </tbody>
-      </table>
-      <span class="badge-s b-warn" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 62 de 100</span>
-      <div style="display:flex; gap:0.5rem; margin-top:auto;">
-        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 bolsa de arroz')">Comprar</button>
-        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Unirme</a>
-      </div>
-    </div>
 
-    <!-- Azúcar -->
-    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
-      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
-        <div class="tile lg t6">🍬</div>
-        <div>
-          <div style="font-weight:700;">Azúcar Guabirá</div>
-          <small class="text-muted-s">Quintal 50 kg · Distribuidora Andina</small>
-          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,8</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem;">
+          <div>
+            <label class="form-label">Meta del grupo (unidades)</label>
+            <input type="number" id="group-meta-qty" class="form-control" value="100" min="10" required />
+          </div>
+          <div>
+            <label class="form-label">Tu aporte inicial</label>
+            <input type="number" id="group-user-qty" class="form-control" value="15" min="1" required />
+          </div>
+          <div style="grid-column: span 2;">
+            <label class="form-label">Zona / Mercado de entrega</label>
+            <select class="form-select" id="group-zone">
+              <option>Mercado Rodríguez (La Paz)</option>
+              <option>Mercado Central El Alto</option>
+              <option>Zona Villa Fátima</option>
+              <option>Mercado La Pampa (Cochabamba)</option>
+            </select>
+          </div>
+          <div style="grid-column: span 2;">
+            <label class="form-label">Cierre de votación y pago</label>
+            <select class="form-select" id="group-deadline">
+              <option>Mañana a las 18:00 (Recomendado)</option>
+              <option>En 48 horas</option>
+              <option>Fin de semana</option>
+            </select>
+          </div>
         </div>
-      </div>
-      <table class="price-table" style="margin-bottom:0.75rem;">
-        <tbody>
-          <tr><td>1 a 49 quintales</td><td style="text-align:right; font-weight:700;">Bs 410</td></tr>
-          <tr><td>50 a 99 quintales</td><td style="text-align:right; font-weight:700;">Bs 395</td></tr>
-          <tr class="active-row"><td>100 o más</td><td class="price-highlight">Bs 385</td></tr>
-        </tbody>
-      </table>
-      <span class="badge-s b-tint" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-plus-circle-fill"></i> Sin grupo abierto todavía</span>
-      <div style="display:flex; gap:0.5rem; margin-top:auto;">
-        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 quintal de azúcar')">Comprar</button>
-        <button class="btn btn-o btn-sm" style="flex:1;" onclick="window.toast('Se abre el formulario para crear un grupo')">Crear grupo</button>
-      </div>
-    </div>
 
-    <!-- Detergente -->
-    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
-      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
-        <div class="tile lg t3">🧴</div>
-        <div>
-          <div style="font-weight:700;">Detergente Ola 1 kg</div>
-          <small class="text-muted-s">Caja x20 · Mayorista El Sol</small>
-          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,6</div>
+        <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
+          <button type="button" class="btn btn-o-line" onclick="closeGroupModal()">Cancelar</button>
+          <button type="submit" class="btn btn-o">
+            <i class="bi bi-rocket-takeoff-fill"></i> Publicar Grupo
+          </button>
         </div>
-      </div>
-      <table class="price-table" style="margin-bottom:0.75rem;">
-        <tbody>
-          <tr><td>1 a 29 cajas</td><td style="text-align:right; font-weight:700;">Bs 190</td></tr>
-          <tr><td>30 a 59 cajas</td><td style="text-align:right; font-weight:700;">Bs 178</td></tr>
-          <tr class="active-row"><td>60 o más</td><td class="price-highlight">Bs 169</td></tr>
-        </tbody>
-      </table>
-      <span class="badge-s b-warn" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 38 de 60</span>
-      <div style="display:flex; gap:0.5rem; margin-top:auto;">
-        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 caja de detergente')">Comprar</button>
-        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Unirme</a>
-      </div>
+      </form>
     </div>
-
-    <!-- Atún -->
-    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
-      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
-        <div class="tile lg t5">🥫</div>
-        <div>
-          <div style="font-weight:700;">Atún Sardimar en aceite</div>
-          <small class="text-muted-s">Caja x48 · Importadora Titicaca</small>
-          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,3</div>
-        </div>
-      </div>
-      <table class="price-table" style="margin-bottom:0.75rem;">
-        <tbody>
-          <tr><td>1 a 24 cajas</td><td style="text-align:right; font-weight:700;">Bs 336</td></tr>
-          <tr><td>25 a 49 cajas</td><td style="text-align:right; font-weight:700;">Bs 318</td></tr>
-          <tr class="active-row"><td>50 o más</td><td class="price-highlight">Bs 299</td></tr>
-        </tbody>
-      </table>
-      <span class="badge-s b-tint" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 21 de 50</span>
-      <div style="display:flex; gap:0.5rem; margin-top:auto;">
-        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 caja de atún')">Comprar</button>
-        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Unirme</a>
-      </div>
-    </div>
-
-    <!-- Refresco -->
-    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
-      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
-        <div class="tile lg t4">🥤</div>
-        <div>
-          <div style="font-weight:700;">Refresco Cielo 2 litros</div>
-          <small class="text-muted-s">Paquete x8 · Mayorista El Sol</small>
-          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,6</div>
-        </div>
-      </div>
-      <table class="price-table" style="margin-bottom:0.75rem;">
-        <tbody>
-          <tr><td>1 a 39 paquetes</td><td style="text-align:right; font-weight:700;">Bs 74</td></tr>
-          <tr><td>40 a 79 paquetes</td><td style="text-align:right; font-weight:700;">Bs 69</td></tr>
-          <tr class="active-row"><td>80 o más</td><td class="price-highlight">Bs 64</td></tr>
-        </tbody>
-      </table>
-      <span class="badge-s b-tint" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-plus-circle-fill"></i> Sin grupo abierto todavía</span>
-      <div style="display:flex; gap:0.5rem; margin-top:auto;">
-        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 paquete de refresco')">Comprar</button>
-        <button class="btn btn-o btn-sm" style="flex:1;" onclick="window.toast('Se abre el formulario para crear un grupo')">Crear grupo</button>
-      </div>
-    </div>
-
   </div>
 
   <style>
     @media (min-width: 576px) {
-      div[style*="grid-template-columns:1fr"]:has(>.input-group) {
+      #search-filter-row {
         grid-template-columns: 1fr auto !important;
       }
       .products-grid { grid-template-columns: repeat(2, 1fr) !important; }
@@ -200,13 +173,305 @@ import AppLayout from '../../layouts/AppLayout.astro';
     @media (min-width: 1200px) {
       .products-grid { grid-template-columns: repeat(3, 1fr) !important; }
     }
+
+    /* Modal styles */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(42, 20, 8, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 2500;
+      display: grid;
+      place-items: center;
+      padding: 1rem;
+    }
+    .modal-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: modalIn 0.2s ease-out;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .btn-close-modal {
+      background: none;
+      border: 0;
+      color: var(--color-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 8px;
+    }
+    .btn-close-modal:hover {
+      background: var(--color-orange-tint);
+      color: var(--color-ink);
+    }
   </style>
 
-  <script>
-    function filterChip(el: HTMLButtonElement) {
+  <script define:vars={{ INITIAL_PRODUCTS, STORAGE_KEY }}>
+    let allProducts = [];
+    let currentFilter = 'all';
+    let currentSearch = '';
+    let currentSort = 'relevant';
+    let selectedProductForGroup = null;
+
+    // Cargar catálogo desde localStorage
+    function loadProducts() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          allProducts = JSON.parse(stored);
+        } else {
+          allProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(allProducts));
+        }
+      } catch (e) {
+        allProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+      }
+    }
+
+    // Renderizar catálogo para el comerciante
+    function renderProducts() {
+      // Solo mostrar productos que estén publicados (publicado === true o no definido)
+      const visibleProducts = allProducts.filter(p => p.publicado !== false);
+
+      let filtered = visibleProducts.filter(p => {
+        const name = (p.nombre || '').toLowerCase();
+        const prov = (p.proveedor || '').toLowerCase();
+        const cat = p.categoria || '';
+        const hasGroup = p.grupo && p.grupo.tieneGrupo;
+
+        const matchSearch = !currentSearch || name.includes(currentSearch) || prov.includes(currentSearch);
+
+        let matchFilter = true;
+        if (currentFilter === 'all') matchFilter = true;
+        else if (currentFilter === 'andina') matchFilter = prov.includes('andina');
+        else if (currentFilter === 'with-group') matchFilter = Boolean(hasGroup);
+        else matchFilter = cat === currentFilter;
+
+        return matchSearch && matchFilter;
+      });
+
+      // Ordenar productos
+      if (currentSort === 'price-asc') {
+        filtered.sort((a, b) => {
+          const pA = parseFloat((a.escalas[a.escalas.length - 1]?.precio || '0').replace(/[^\d.-]/g, ''));
+          const pB = parseFloat((b.escalas[b.escalas.length - 1]?.precio || '0').replace(/[^\d.-]/g, ''));
+          return pA - pB;
+        });
+      } else if (currentSort === 'rating') {
+        filtered.sort((a, b) => (b.rating || 4.5) - (a.rating || 4.5));
+      } else if (currentSort === 'groups') {
+        filtered.sort((a, b) => ((b.grupo?.tieneGrupo ? 1 : 0) - (a.grupo?.tieneGrupo ? 1 : 0)));
+      }
+
+      // Conteo
+      const titleEl = document.getElementById('products-count-title');
+      if (titleEl) {
+        titleEl.textContent = `${filtered.length} ${filtered.length === 1 ? 'producto encontrado' : 'productos encontrados'}`;
+      }
+
+      const grid = document.getElementById('merchant-products-grid');
+      const noResults = document.getElementById('no-results-panel');
+
+      if (filtered.length === 0) {
+        if (noResults) noResults.style.display = 'block';
+        if (grid) grid.innerHTML = '';
+        return;
+      }
+
+      if (noResults) noResults.style.display = 'none';
+
+      // Renderizar tarjetas
+      if (grid) {
+        grid.innerHTML = filtered.map(p => {
+          const hasGroup = p.grupo && p.grupo.tieneGrupo;
+          const isAndina = (p.proveedor || '').includes('Andina');
+          const groupBadge = p.grupo?.badgeCls || (hasGroup ? 'b-ok' : 'b-tint');
+          const groupText = p.grupo?.texto || (hasGroup ? 'Grupo abierto' : 'Sin grupo abierto todavía');
+
+          return `
+            <div class="panel" style="display:flex; flex-direction:column; height:100%; transition:box-shadow 0.15s, border-color 0.15s;">
+              
+              <!-- Header de Producto -->
+              <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+                <div class="tile lg ${p.tileCls || 't2'}" style="flex-shrink:0;">${p.tile || '📦'}</div>
+                <div style="flex:1; min-width:0;">
+                  <div style="display:flex; align-items:center; gap:0.35rem; margin-bottom:0.2rem;">
+                    ${isAndina ? `
+                      <span class="badge-s b-ok" style="font-size:0.7rem; padding:0.12rem 0.45rem;">
+                        <i class="bi bi-shield-check"></i> Distribuidora Andina
+                      </span>
+                    ` : `
+                      <small class="text-muted-s" style="font-weight:600;">${p.proveedor}</small>
+                    `}
+                  </div>
+                  <div style="font-weight:700; font-size:1.05rem; line-height:1.25; margin-bottom:0.2rem;">
+                    ${p.nombre}
+                  </div>
+                  <small class="text-muted-s">${p.presentacion || ''}</small>
+                  <div style="font-size:0.88rem; margin-top:0.25rem;">
+                    <span class="stars">★</span> ${p.rating || '4.8'}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Escala de Precios -->
+              <table class="price-table" style="margin-bottom:0.75rem;">
+                <tbody>
+                  ${(p.escalas || []).map(esc => `
+                    <tr class="${esc.highlight ? 'active-row' : ''}">
+                      <td>${esc.tramo}</td>
+                      <td class="${esc.highlight ? 'price-highlight' : ''}" style="${esc.highlight ? '' : 'text-align:right; font-weight:700;'}">
+                        ${esc.precio}
+                      </td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+
+              <!-- Badge de Grupo -->
+              <span class="badge-s ${groupBadge}" style="margin-bottom:0.75rem; align-self:flex-start;">
+                <i class="bi ${hasGroup ? 'bi-people-fill' : 'bi-plus-circle-fill'}"></i>
+                ${groupText}
+              </span>
+
+              <!-- Acciones -->
+              <div style="display:flex; gap:0.5rem; margin-top:auto;">
+                <button 
+                  class="btn btn-o-line btn-sm" 
+                  style="flex:1; justify-content:center;" 
+                  onclick="window.buyIndividual('${p.nombre.replace(/'/g, "\\'")}')"
+                >
+                  Comprar
+                </button>
+                
+                ${hasGroup ? `
+                  <a 
+                    href="${p.grupo.link || '/comerciante/grupo'}" 
+                    class="btn btn-o btn-sm" 
+                    style="flex:1; justify-content:center; text-decoration:none;"
+                  >
+                    ${p.grupo.texto.includes('100') ? 'Ver grupo' : 'Unirme'}
+                  </a>
+                ` : `
+                  <button 
+                    class="btn btn-o btn-sm" 
+                    style="flex:1; justify-content:center;" 
+                    onclick="window.openCreateGroup('${p.id}')"
+                  >
+                    Crear grupo
+                  </button>
+                `}
+              </div>
+
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    // Funciones globales de interacción
+    window.handleSearch = function() {
+      const input = document.getElementById('search-input');
+      currentSearch = (input?.value || '').trim().toLowerCase();
+      renderProducts();
+    };
+
+    window.filterChip = function(el, filter) {
       document.querySelectorAll('#chips .chip').forEach(c => c.classList.remove('active'));
       el.classList.add('active');
-    }
-    (window as any).filterChip = filterChip;
+      currentFilter = filter;
+      renderProducts();
+    };
+
+    window.handleFilterChange = function() {
+      renderProducts();
+    };
+
+    window.handleSortChange = function() {
+      const select = document.getElementById('sort-select');
+      currentSort = select?.value || 'relevant';
+      renderProducts();
+    };
+
+    window.resetFilters = function() {
+      const input = document.getElementById('search-input');
+      if (input) input.value = '';
+      currentSearch = '';
+
+      const firstChip = document.querySelector('#chips .chip');
+      if (firstChip) window.filterChip(firstChip, 'all');
+      else renderProducts();
+    };
+
+    window.buyIndividual = function(name) {
+      window.toast(`Agregado al pedido individual: 1 unidad de ${name}`);
+    };
+
+    window.openCreateGroup = function(productId) {
+      selectedProductForGroup = allProducts.find(p => p.id === productId);
+      if (!selectedProductForGroup) return;
+
+      const modal = document.getElementById('modal-create-group');
+      const nameEl = document.getElementById('group-modal-name');
+      const provEl = document.getElementById('group-modal-prov');
+      const tileEl = document.getElementById('group-modal-tile');
+      const priceEl = document.getElementById('group-modal-target-price');
+
+      const bestPrice = selectedProductForGroup.escalas[selectedProductForGroup.escalas.length - 1]?.precio || 'Bs --';
+
+      if (nameEl) nameEl.textContent = selectedProductForGroup.nombre;
+      if (provEl) provEl.textContent = `${selectedProductForGroup.presentacion} · ${selectedProductForGroup.proveedor}`;
+      if (tileEl) tileEl.textContent = selectedProductForGroup.tile || '📦';
+      if (priceEl) priceEl.textContent = `Precio meta por volumen: ${bestPrice}`;
+
+      if (modal) modal.style.display = 'grid';
+    };
+
+    window.closeGroupModal = function() {
+      const modal = document.getElementById('modal-create-group');
+      if (modal) modal.style.display = 'none';
+      selectedProductForGroup = null;
+    };
+
+    window.handleConfirmCreateGroup = function(e) {
+      e.preventDefault();
+      if (!selectedProductForGroup) return;
+
+      const qty = document.getElementById('group-user-qty')?.value || '15';
+      const meta = document.getElementById('group-meta-qty')?.value || '100';
+
+      // Actualizar el estado del producto en el catálogo
+      selectedProductForGroup.grupo = {
+        tieneGrupo: true,
+        texto: `1 grupo abierto: ${qty} de ${meta}`,
+        badgeCls: 'b-warn',
+        link: '/comerciante/grupo'
+      };
+
+      // Guardar en localStorage
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(allProducts));
+      
+      window.closeGroupModal();
+      renderProducts();
+      window.toast(`¡Grupo creado con éxito para "${selectedProductForGroup.nombre}" con ${qty} unidades!`);
+    };
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProducts();
+      renderProducts();
+    });
+    loadProducts();
+    renderProducts();
   </script>
+
 </AppLayout>

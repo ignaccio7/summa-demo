@@ -16,9 +16,10 @@ const navComerciant = [
   { id: 'pedidos',  href: '/comerciante/pedidos',  icon: 'bi-box-seam-fill',    label: 'Pedidos' },
 ];
 const navProveedor = [
-  { id: 'panel',   href: '/proveedor',          icon: 'bi-speedometer2',  label: 'Panel' },
-  { id: 'ofertar', href: '/proveedor/ofertar',  icon: 'bi-tag-fill',      label: 'Ofertar' },
-  { id: 'pedidos', href: '/proveedor/pedidos',  icon: 'bi-truck',         label: 'Pedidos' },
+  { id: 'panel',     href: '/proveedor',           icon: 'bi-speedometer2', label: 'Panel' },
+  { id: 'productos', href: '/proveedor/productos', icon: 'bi-boxes',        label: 'Productos' },
+  { id: 'ofertar',   href: '/proveedor/ofertar',   icon: 'bi-tag-fill',     label: 'Ofertar' },
+  { id: 'pedidos',   href: '/proveedor/pedidos',   icon: 'bi-truck',        label: 'Pedidos' },
 ];
 const navItems = role === 'comerciante' ? navComerciant : navProveedor;
 
