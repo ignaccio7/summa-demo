@@ -1,175 +1,252 @@
 ---
 // index.astro – Página de Login de Summa
-import SvgSymbols from '../components/brand/SvgSymbols.astro';
-import Wordmark from '../components/brand/Wordmark.astro';
+import SvgSymbols from "../components/brand/SvgSymbols.astro";
+import Wordmark from "../components/brand/Wordmark.astro";
+import "../styles/global.css";
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Summa | Juntos compramos como grandes</title>
-  <meta name="description" content="Summa – Plataforma de compras colectivas para comerciantes y proveedores de Bolivia. Ingresa o crea tu cuenta gratis.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="/src/styles/global.css">
-</head>
-<body>
-  <SvgSymbols />
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Summa | Juntos compramos como grandes</title>
+    <meta
+      name="description"
+      content="Summa – Plataforma de compras colectivas para comerciantes y proveedores de Bolivia. Ingresa o crea tu cuenta gratis."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <!-- <link rel="stylesheet" href="/src/styles/global.css"> -->
+  </head>
+  <body>
+    <SvgSymbols />
 
-  <section style="min-height:100vh; display:grid; grid-template-columns:1fr; align-items:stretch;">
-    <div style="display:flex; flex-direction:column; min-height:100vh;">
+    <section
+      style="min-height:100vh; display:grid; grid-template-columns:1fr; align-items:stretch;"
+    >
+      <div style="display:flex; flex-direction:column; min-height:100vh;">
+        <!-- Contenido en dos columnas en desktop -->
+        <div
+          style="flex:1; display:grid; grid-template-columns:1fr; min-height:100vh;"
+        >
+          <!-- ── Columna izquierda (marca) ── -->
+          <div
+            class="login-side"
+            style="display:flex; flex-direction:column; justify-content:space-between; padding:2.5rem; gap:2rem; order:2;"
+          >
+            <span class="ring r1"></span>
+            <span class="ring r2"></span>
+            <span class="ring r3"></span>
 
-      <!-- Contenido en dos columnas en desktop -->
-      <div style="flex:1; display:grid; grid-template-columns:1fr; min-height:100vh;">
-
-        <!-- ── Columna izquierda (marca) ── -->
-        <div class="login-side" style="display:flex; flex-direction:column; justify-content:space-between; padding:2.5rem; gap:2rem; order:2;">
-          <span class="ring r1"></span>
-          <span class="ring r2"></span>
-          <span class="ring r3"></span>
-
-          <div style="position:relative;">
-            <Wordmark size="xl" white />
-          </div>
-
-          <div style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; padding: 2rem 0;">
-            <h1 class="login-big" style="margin-bottom:1.5rem;">
-              Un comerciante compra poco.<br>
-              Cien juntos compran como grandes.
-            </h1>
-            <div class="calc-chip" style="margin-bottom:1rem;">
-              <div class="row-c"><span>Carmen</span><span>20 x Bs 70</span><b>Bs 1.400</b></div>
-              <div class="row-c"><span>Julián</span><span>30 x Bs 70</span><b>Bs 2.100</b></div>
-              <div class="row-c"><span>Rosa</span><span>50 x Bs 70</span><b>Bs 3.500</b></div>
-              <div class="row-c total"><span>Pedido del grupo</span><span>100 cajas</span><b>Bs 7.000</b></div>
-            </div>
-            <p style="margin:0; opacity:0.75; max-width:34ch;">Cada uno paga solo lo suyo y recibe su propia mercadería.</p>
-          </div>
-
-          <div style="position:relative; display:flex; gap:2rem; flex-wrap:wrap;">
-            <div>
-              <div class="money" style="font-size:1.8rem;">1.240</div>
-              <small style="opacity:0.75;">comerciantes en lista de espera</small>
-            </div>
-            <div>
-              <div class="money" style="font-size:1.8rem;">38</div>
-              <small style="opacity:0.75;">proveedores interesados</small>
-            </div>
-            <div>
-              <div class="money" style="font-size:1.8rem;">Bs 1,8 M</div>
-              <small style="opacity:0.75;">en pedidos simulados</small>
-            </div>
-          </div>
-        </div>
-
-        <!-- ── Columna derecha (formulario) ── -->
-        <div style="display:flex; align-items:center; justify-content:center; padding:2.5rem 1.5rem; order:1;">
-          <div style="width:100%; max-width:520px;">
-            <h2 style="font-size:2rem; margin-bottom:0.25rem;">Ingresa a Summa</h2>
-            <p class="text-muted-s" style="margin-bottom:1.5rem;">Busca proveedores, únete a un grupo y compra mejor.</p>
-
-            <div style="margin-bottom:1rem;">
-              <label class="form-label" for="lg-mail">Correo</label>
-              <input id="lg-mail" class="form-control" type="email" value="carmen@abarrotesandes.bo" autocomplete="email">
+            <div style="position:relative;">
+              <Wordmark size="xl" white />
             </div>
 
-            <div style="margin-bottom:0.5rem;">
-              <label class="form-label" for="lg-pass">Contraseña</label>
-              <div class="input-group">
-                <input id="lg-pass" class="form-control" type="password" value="summa2026" autocomplete="current-password" style="border-right:0; border-radius:12px 0 0 12px;">
-                <button class="btn btn-o-line" type="button" id="toggle-pass" style="border-radius:0 12px 12px 0;" aria-label="Mostrar contraseña">
-                  <i class="bi bi-eye" id="eye-icon"></i>
-                </button>
+            <div
+              style="position:relative; flex:1; display:flex; flex-direction:column; justify-content:center; padding: 2rem 0;"
+            >
+              <h1 class="login-big" style="margin-bottom:1.5rem;">
+                Un comerciante compra poco.<br />
+                Cien juntos compran como grandes.
+              </h1>
+              <div class="calc-chip" style="margin-bottom:1rem;">
+                <div class="row-c">
+                  <span>Carmen</span><span>20 x Bs 70</span><b>Bs 1.400</b>
+                </div>
+                <div class="row-c">
+                  <span>Julián</span><span>30 x Bs 70</span><b>Bs 2.100</b>
+                </div>
+                <div class="row-c">
+                  <span>Rosa</span><span>50 x Bs 70</span><b>Bs 3.500</b>
+                </div>
+                <div class="row-c total">
+                  <span>Pedido del grupo</span><span>100 cajas</span><b
+                    >Bs 7.000</b>
+                </div>
+              </div>
+              <p style="margin:0; opacity:0.75; max-width:34ch;">
+                Cada uno paga solo lo suyo y recibe su propia mercadería.
+              </p>
+            </div>
+
+            <div
+              style="position:relative; display:flex; gap:2rem; flex-wrap:wrap;"
+            >
+              <div>
+                <div class="money" style="font-size:1.8rem;">1.240</div>
+                <small style="opacity:0.75;"
+                  >comerciantes en lista de espera</small
+                >
+              </div>
+              <div>
+                <div class="money" style="font-size:1.8rem;">38</div>
+                <small style="opacity:0.75;">proveedores interesados</small>
+              </div>
+              <div>
+                <div class="money" style="font-size:1.8rem;">Bs 1,8 M</div>
+                <small style="opacity:0.75;">en pedidos simulados</small>
               </div>
             </div>
+          </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; font-size:0.88rem;">
-              <label style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
-                <input type="checkbox" id="rec" checked style="accent-color:var(--color-orange);">
-                Mantener sesión
-              </label>
-              <a href="#" id="forgot-link">Olvidé mi contraseña</a>
-            </div>
+          <!-- ── Columna derecha (formulario) ── -->
+          <div
+            style="display:flex; align-items:center; justify-content:center; padding:2.5rem 1.5rem; order:1;"
+          >
+            <div style="width:100%; max-width:520px;">
+              <h2 style="font-size:2rem; margin-bottom:0.25rem;">
+                Ingresa a Summa
+              </h2>
+              <p class="text-muted-s" style="margin-bottom:1.5rem;">
+                Busca proveedores, únete a un grupo y compra mejor.
+              </p>
 
-            <a href="/comerciante" class="btn btn-o" style="width:100%; justify-content:center; padding:0.875rem; margin-bottom:0.75rem; font-size:1rem;">
-              Ingresar
-            </a>
-
-            <p style="text-align:center; font-size:0.88rem; margin-bottom:1.5rem;">
-              ¿Aún no tienes cuenta? <a href="#" id="register-link">Crear cuenta gratis</a>
-            </p>
-
-            <div class="demo-pill">
-              <div style="font-weight:700; margin-bottom:0.5rem;">
-                <i class="bi bi-lightning-charge-fill text-o"></i> Cuentas de demostración
+              <div style="margin-bottom:1rem;">
+                <label class="form-label" for="lg-mail">Correo</label>
+                <input
+                  id="lg-mail"
+                  class="form-control"
+                  type="email"
+                  value="carmen@abarrotesandes.bo"
+                  autocomplete="email"
+                />
               </div>
-              <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
-                <a href="/comerciante" class="btn btn-o-line btn-sm">
-                  <i class="bi bi-shop"></i> Comerciante
-                </a>
-                <a href="/proveedor" class="btn btn-o-line btn-sm">
-                  <i class="bi bi-truck"></i> Proveedor
-                </a>
+
+              <div style="margin-bottom:0.5rem;">
+                <label class="form-label" for="lg-pass">Contraseña</label>
+                <div class="input-group">
+                  <input
+                    id="lg-pass"
+                    class="form-control"
+                    type="password"
+                    value="summa2026"
+                    autocomplete="current-password"
+                    style="border-right:0; border-radius:12px 0 0 12px;"
+                  />
+                  <button
+                    class="btn btn-o-line"
+                    type="button"
+                    id="toggle-pass"
+                    style="border-radius:0 12px 12px 0;"
+                    aria-label="Mostrar contraseña"
+                  >
+                    <i class="bi bi-eye" id="eye-icon"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div
+                style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; font-size:0.88rem;"
+              >
+                <label
+                  style="display:flex; align-items:center; gap:0.4rem; cursor:pointer;"
+                >
+                  <input
+                    type="checkbox"
+                    id="rec"
+                    checked
+                    style="accent-color:var(--color-orange);"
+                  />
+                  Mantener sesión
+                </label>
+                <a href="#" id="forgot-link">Olvidé mi contraseña</a>
+              </div>
+
+              <a
+                href="/comerciante"
+                class="btn btn-o"
+                style="width:100%; justify-content:center; padding:0.875rem; margin-bottom:0.75rem; font-size:1rem;"
+              >
+                Ingresar
+              </a>
+
+              <p
+                style="text-align:center; font-size:0.88rem; margin-bottom:1.5rem;"
+              >
+                ¿Aún no tienes cuenta? <a href="#" id="register-link"
+                  >Crear cuenta gratis</a
+                >
+              </p>
+
+              <div class="demo-pill">
+                <div style="font-weight:700; margin-bottom:0.5rem;">
+                  <i class="bi bi-lightning-charge-fill text-o"></i> Cuentas de demostración
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                  <a href="/comerciante" class="btn btn-o-line btn-sm">
+                    <i class="bi bi-shop"></i> Comerciante
+                  </a>
+                  <a href="/proveedor" class="btn btn-o-line btn-sm">
+                    <i class="bi bi-truck"></i> Proveedor
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Toast -->
-  <div class="toast-s" id="toast" role="status" aria-live="polite"></div>
+    <!-- Toast -->
+    <div class="toast-s" id="toast" role="status" aria-live="polite"></div>
 
-  <style>
-    @media (min-width: 992px) {
-      section > div > div {
-        grid-template-columns: 1fr 1fr !important;
+    <style>
+      @media (min-width: 992px) {
+        section > div > div {
+          grid-template-columns: 1fr 1fr !important;
+        }
+        .login-side {
+          order: 2 !important;
+        }
+        section > div > div > div:last-child {
+          order: 1 !important;
+        }
       }
-      .login-side {
-        order: 2 !important;
+    </style>
+
+    <script>
+      function toast(m: string) {
+        const t = document.getElementById("toast");
+        if (!t) return;
+        t.textContent = m;
+        t.classList.add("show");
+        clearTimeout((t as any)._t);
+        (t as any)._t = setTimeout(() => t.classList.remove("show"), 2600);
       }
-      section > div > div > div:last-child {
-        order: 1 !important;
-      }
-    }
-  </style>
 
-  <script>
-    function toast(m: string) {
-      const t = document.getElementById('toast');
-      if (!t) return;
-      t.textContent = m;
-      t.classList.add('show');
-      clearTimeout((t as any)._t);
-      (t as any)._t = setTimeout(() => t.classList.remove('show'), 2600);
-    }
+      document.getElementById("toggle-pass")?.addEventListener("click", () => {
+        const input = document.getElementById("lg-pass") as HTMLInputElement;
+        const icon = document.getElementById("eye-icon");
+        if (!input || !icon) return;
+        if (input.type === "password") {
+          input.type = "text";
+          icon.className = "bi bi-eye-slash";
+        } else {
+          input.type = "password";
+          icon.className = "bi bi-eye";
+        }
+      });
 
-    document.getElementById('toggle-pass')?.addEventListener('click', () => {
-      const input = document.getElementById('lg-pass') as HTMLInputElement;
-      const icon = document.getElementById('eye-icon');
-      if (!input || !icon) return;
-      if (input.type === 'password') {
-        input.type = 'text';
-        icon.className = 'bi bi-eye-slash';
-      } else {
-        input.type = 'password';
-        icon.className = 'bi bi-eye';
-      }
-    });
+      document.getElementById("forgot-link")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        toast("Te enviamos un enlace para cambiar tu contraseña");
+      });
 
-    document.getElementById('forgot-link')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      toast('Te enviamos un enlace para cambiar tu contraseña');
-    });
-
-    document.getElementById('register-link')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      toast('Aquí se elige el rol: comerciante o proveedor');
-    });
-  </script>
-</body>
+      document
+        .getElementById("register-link")
+        ?.addEventListener("click", (e) => {
+          e.preventDefault();
+          toast("Aquí se elige el rol: comerciante o proveedor");
+        });
+    </script>
+  </body>
 </html>
