@@ -1,0 +1,152 @@
+---
+// comerciante/pedidos.astro – Mis Pedidos (c-orders)
+import AppLayout from '../../layouts/AppLayout.astro';
+---
+<AppLayout pageTitle="Mis pedidos" role="comerciante">
+  <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
+
+    <!-- Columna principal: pedido activo -->
+    <div>
+      <!-- Pedido SM-2041 -->
+      <div class="panel flat" style="margin-bottom:1.25rem;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:0.75rem; margin-bottom:1.25rem;">
+          <div style="display:flex; gap:0.75rem;">
+            <div class="tile t6">🍬</div>
+            <div>
+              <div style="margin-bottom:0.25rem;">
+                <span class="badge-s b-o">En preparación</span>
+                <span class="badge-s b-tint" style="margin-left:0.25rem;">Compra en grupo</span>
+              </div>
+              <h2 style="font-size:1.2rem; margin-bottom:0;">Pedido SM-2041</h2>
+              <small class="text-muted-s">Azúcar Guabirá, quintal 50 kg. Distribuidora Andina</small>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div class="money" style="font-size:1.8rem; color:var(--color-orange-deep);">Bs 3.850</div>
+            <small class="text-muted-s">10 quintales x Bs 385</small>
+          </div>
+        </div>
+
+        <!-- Stepper -->
+        <div class="stepper" style="margin-bottom:1.25rem;">
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Solicitud</div>
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Negociación</div>
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Confirmada</div>
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Pagada</div>
+          <div class="step current"><div class="dot"><i class="bi bi-box-seam"></i></div>En preparación</div>
+          <div class="step"><div class="dot"><i class="bi bi-house-check"></i></div>Entregada</div>
+        </div>
+
+        <!-- Info entrega y pago -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.25rem;">
+          <div class="panel-tint">
+            <div style="font-size:0.85rem;" class="text-muted-s">Entrega estimada</div>
+            <div style="font-weight:700;">Viernes 2 de octubre</div>
+            <div style="font-size:0.88rem;">Av. Buenos Aires 1234, Rodríguez</div>
+          </div>
+          <div class="panel-tint">
+            <div style="font-size:0.85rem;" class="text-muted-s">Pago</div>
+            <div style="font-weight:700; color:var(--color-ok);"><i class="bi bi-check-circle-fill"></i> Confirmado el 28 de sep</div>
+            <div style="font-size:0.88rem;">Transferencia. Comprobante enviado</div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+          <button class="btn btn-o" onclick="window.toast('Se abre el detalle para confirmar la recepción')">
+            <i class="bi bi-house-check"></i> Confirmar recepción
+          </button>
+          <button class="btn btn-o-line" onclick="window.toast('Se abre el chat con el proveedor')">
+            <i class="bi bi-chat-dots"></i> Escribir al proveedor
+          </button>
+        </div>
+      </div>
+
+      <!-- Historial de estados -->
+      <div class="panel">
+        <h3 style="font-size:1.05rem; margin-bottom:0.75rem;">Historial de estados</h3>
+        <ul class="vt">
+          <li class="now"><span class="pt"><i class="bi bi-box-seam"></i></span><b>En preparación</b><div style="font-size:0.88rem;" class="text-muted-s">29 sep, 09:40. Distribuidora Andina arma el despacho del grupo.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Pagada</b><div style="font-size:0.88rem;" class="text-muted-s">28 sep, 16:10. El proveedor confirmó tu pago de Bs 3.850.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Confirmada</b><div style="font-size:0.88rem;" class="text-muted-s">27 sep, 18:00. Ganó la oferta de Bs 385 por quintal.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Negociación y solicitud</b><div style="font-size:0.88rem;" class="text-muted-s">20 al 27 sep. Grupo de 5 comerciantes, 100 quintales.</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Columna lateral: otros pedidos -->
+    <div>
+      <h3 style="font-size:1.05rem; margin-bottom:0.75rem;">Otros pedidos</h3>
+      <div style="display:flex; flex-direction:column; gap:0.75rem;">
+
+        <div class="panel">
+          <div style="display:flex; gap:0.75rem; align-items:center;">
+            <div class="tile t3" style="width:52px;height:52px;font-size:1.6rem;">🧴</div>
+            <div style="flex:1;">
+              <div style="font-weight:700;">Detergente Ola 1 kg</div>
+              <small class="text-muted-s">Compra individual. 2 cajas</small>
+            </div>
+            <div style="text-align:right;">
+              <div class="money">Bs 380</div>
+              <span class="badge-s b-warn">Solicitado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex; gap:0.75rem; align-items:center;">
+            <div class="tile t4" style="width:52px;height:52px;font-size:1.6rem;">🥤</div>
+            <div style="flex:1;">
+              <div style="font-weight:700;">Refresco Cielo 2 litros</div>
+              <small class="text-muted-s">Compra en grupo. 40 paquetes</small>
+            </div>
+            <div style="text-align:right;">
+              <div class="money">Bs 2.760</div>
+              <span class="badge-s b-tint">Confirmada</span>
+            </div>
+          </div>
+          <div class="your-cost" style="margin-top:0.75rem; font-size:0.88rem;">
+            Falta pagar a Mayorista El Sol antes del 1 de octubre.
+            <div style="margin-top:0.5rem;">
+              <button class="btn btn-o btn-sm" onclick="window.toast('Marcaste el pedido como pagado. Falta la confirmación del proveedor')">Ya pagué</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex; gap:0.75rem; align-items:center;">
+            <div class="tile t2" style="width:52px;height:52px;font-size:1.6rem;">🍝</div>
+            <div style="flex:1;">
+              <div style="font-weight:700;">Fideo Lucchetti</div>
+              <small class="text-muted-s">Compra en grupo. 30 cajas</small>
+            </div>
+            <div style="text-align:right;">
+              <div class="money">Bs 2.190</div>
+              <span class="badge-s b-ok">Entregado</span>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.75rem;">
+            <span class="stars" style="font-size:1.25rem;">★★★★★</span>
+            <button class="btn btn-o-line btn-sm" onclick="window.toast('Gracias por calificar a Distribuidora Andina')">Calificar proveedor</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Ahorro total -->
+      <div class="panel-tint" style="margin-top:1.25rem;">
+        <div style="font-size:0.88rem;" class="text-muted-s">Ahorro total en pedidos de grupo</div>
+        <div class="money" style="font-size:2rem; color:var(--color-orange-deep);">Bs 1.240</div>
+        <small>Frente al precio que hubieras pagado comprando sola.</small>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    @media (min-width: 992px) {
+      section > div > div[style*="grid-template-columns:1fr"]:has(.panel.flat) {
+        grid-template-columns: 7fr 5fr !important;
+      }
+    }
+  </style>
+</AppLayout>

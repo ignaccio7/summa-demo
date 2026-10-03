@@ -1,0 +1,168 @@
+---
+// proveedor/ofertar.astro – Enviar Oferta (p-offer)
+import AppLayout from '../../layouts/AppLayout.astro';
+---
+<AppLayout pageTitle="Enviar oferta" role="proveedor">
+  <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
+
+    <!-- Columna izquierda: info del grupo -->
+    <div>
+      <div class="panel flat" style="margin-bottom:0.75rem;">
+        <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+          <div class="tile lg t2">🛢️</div>
+          <div>
+            <span class="badge-s b-o" style="margin-bottom:0.4rem; display:inline-flex;">Cierra mañana</span>
+            <h2 style="font-size:1.2rem; margin-bottom:0.2rem;">Aceite Fino 900 ml, caja x12</h2>
+            <small class="text-muted-s">Grupo organizado por Carmen Quispe</small>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; text-align:center; margin-bottom:0.75rem;">
+          <div class="panel-tint" style="padding:0.5rem;">
+            <div class="money" style="font-size:1.4rem;">100</div>
+            <small>cajas</small>
+          </div>
+          <div class="panel-tint" style="padding:0.5rem;">
+            <div class="money" style="font-size:1.4rem;">5</div>
+            <small>comerciantes</small>
+          </div>
+          <div class="panel-tint" style="padding:0.5rem;">
+            <div class="money" style="font-size:1.4rem;">Bs 80</div>
+            <small>precio normal</small>
+          </div>
+        </div>
+        <div class="divider-dash" style="margin-bottom:0.75rem;"></div>
+        <div style="font-size:0.88rem; display:flex; flex-direction:column; gap:0.3rem;">
+          <div><i class="bi bi-geo-alt-fill text-o"></i> Entrega en Rodríguez, Gran Poder, Villa Fátima, El Alto y Sopocachi</div>
+          <div><i class="bi bi-chat-quote-fill text-o"></i> Condición del grupo: marca conocida y entrega antes del feriado</div>
+          <div><i class="bi bi-people-fill text-o"></i> Ya hay 2 ofertas de otros proveedores</div>
+        </div>
+      </div>
+
+      <!-- Resultado calculado -->
+      <div class="panel-tint">
+        <b>Resultado para tu oferta</b>
+        <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+          <span>Total del pedido</span>
+          <span class="money" style="font-size:1.4rem;" id="pv-total">Bs 7.000</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Ahorro para el grupo</span>
+          <span class="money" style="font-size:1.1rem; color:var(--color-ok);" id="pv-save">Bs 1.000 (12,5%)</span>
+        </div>
+        <div style="font-size:0.85rem; margin-top:0.5rem;" class="text-muted-s">Los comerciantes verán el ahorro contra el precio normal y su costo individual.</div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: formulario -->
+    <div class="panel flat">
+      <h3 style="font-size:1.2rem; margin-bottom:1rem;">Tu oferta al grupo</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+
+        <div>
+          <label class="form-label" for="f-price">Precio por caja</label>
+          <div class="input-group">
+            <span class="input-group-text">Bs</span>
+            <input id="f-price" type="number" class="form-control" value="70" min="1" style="border-radius:0 12px 12px 0; border-left:0;">
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label" for="f-qty">Cajas que puedes cubrir</label>
+          <input id="f-qty" type="number" class="form-control" value="100" min="1" max="100">
+        </div>
+
+        <div>
+          <label class="form-label" for="f-days">Tiempo de entrega</label>
+          <div class="input-group">
+            <input id="f-days" type="number" class="form-control" value="3" style="border-radius:12px 0 0 12px; border-right:0;">
+            <span class="input-group-text" style="border-radius:0 12px 12px 0; border-left:0;">días</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="form-label" for="f-valid">La oferta vale hasta</label>
+          <input id="f-valid" type="date" class="form-control" value="2026-10-01">
+        </div>
+
+        <div>
+          <label class="form-label" for="f-deliv">Forma de entrega</label>
+          <select id="f-deliv" class="form-select">
+            <option>Entrega a domicilio sin costo</option>
+            <option>Entrega a domicilio con costo</option>
+            <option>Recojo en almacén</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label" for="f-pay">Forma de pago</label>
+          <select id="f-pay" class="form-select">
+            <option>Contra confirmación del pedido</option>
+            <option>Contra entrega</option>
+            <option>50% adelantado</option>
+          </select>
+        </div>
+
+        <div style="grid-column:1/-1;">
+          <label class="form-label" for="f-note">Condiciones y garantía</label>
+          <textarea id="f-note" class="form-control" rows="3">Cambio de cajas dañadas dentro de las 48 horas. Facturamos a cada comerciante por su pedido.</textarea>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem;">
+        <button class="btn btn-o" onclick="window.toast('Oferta enviada a los 5 comerciantes del grupo')">
+          <i class="bi bi-send-fill"></i> Enviar oferta
+        </button>
+        <button class="btn btn-o-line" onclick="window.toast('Borrador guardado')">Guardar borrador</button>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    textarea.form-control {
+      border: 2px solid var(--color-orange-line);
+      border-radius: 12px;
+      padding: 0.65rem 0.9rem;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      resize: vertical;
+      width: 100%;
+    }
+    textarea.form-control:focus {
+      border-color: var(--color-orange);
+      box-shadow: 0 0 0 0.25rem rgba(255,107,0,.15);
+      outline: none;
+    }
+    @media (min-width: 992px) {
+      section > div > div[style*="grid-template-columns:1fr"]:has(.panel.flat) {
+        grid-template-columns: 5fr 7fr !important;
+      }
+    }
+  </style>
+
+  <script>
+    function fmt(n: number) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+    function calcOffer() {
+      const p = +(document.getElementById('f-price') as HTMLInputElement).value || 0;
+      const q = +(document.getElementById('f-qty') as HTMLInputElement).value || 0;
+      const total = p * q;
+      const save = (80 - p) * q;
+      const pct = p > 0 ? (((80 - p) / 80) * 100) : 0;
+
+      const pvTotal = document.getElementById('pv-total');
+      const pvSave = document.getElementById('pv-save');
+      if (pvTotal) pvTotal.textContent = 'Bs ' + fmt(total);
+      if (pvSave) {
+        pvSave.textContent = save >= 0
+          ? `Bs ${fmt(save)} (${pct.toFixed(1).replace('.', ',')}%)`
+          : 'Tu precio supera el normal';
+        pvSave.style.color = save >= 0 ? 'var(--color-ok)' : '#C0392B';
+      }
+    }
+
+    document.getElementById('f-price')?.addEventListener('input', calcOffer);
+    document.getElementById('f-qty')?.addEventListener('input', calcOffer);
+    calcOffer();
+  </script>
+</AppLayout>

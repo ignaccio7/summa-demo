@@ -1,0 +1,216 @@
+---
+// comerciante/index.astro – Inicio del Comerciante (c-home)
+import AppLayout from '../../layouts/AppLayout.astro';
+---
+<AppLayout pageTitle="Inicio" role="comerciante">
+
+  <!-- Hero -->
+  <div class="hero-c" style="margin-bottom:1.5rem;">
+    <div style="display:grid; grid-template-columns:1fr; gap:1rem; position:relative; z-index:1;">
+      <div class="hero-col-left">
+        <h2 style="font-family:var(--font-display); font-size:clamp(1.7rem,3.4vw,2.4rem); font-weight:800; letter-spacing:-.035em; margin-bottom:0.5rem;">
+          Hola, Carmen. Tienes 1 votación por cerrar.
+        </h2>
+        <p style="margin-bottom:1rem; opacity:0.9;">Abarrotes Los Andes, zona Rodríguez, La Paz</p>
+        <div class="hero-search">
+          <i class="bi bi-search text-o"></i>
+          <input placeholder="¿Qué necesitas comprar esta semana?" aria-label="Buscar productos">
+          <a href="/comerciante/explorar" class="btn btn-o btn-sm">Buscar</a>
+        </div>
+      </div>
+      <div>
+        <div style="background:#fff; color:var(--color-ink); border-radius:16px; padding:1.25rem;">
+          <div style="font-size:0.88rem;" class="text-muted-s">Ahorro acumulado con Summa</div>
+          <div class="money" style="font-size:2.5rem; color:var(--color-orange-deep);">Bs 1.240</div>
+          <div style="font-size:0.88rem;">en 6 compras colectivas desde junio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1.5rem;">
+    <div class="stat">
+      <div style="margin-bottom:0.5rem;"><span class="ico"><i class="bi bi-people-fill"></i></span></div>
+      <div class="n">3</div>
+      <small class="text-muted-s">grupos activos</small>
+    </div>
+    <div class="stat">
+      <div style="margin-bottom:0.5rem;"><span class="ico"><i class="bi bi-box-seam-fill"></i></span></div>
+      <div class="n">2</div>
+      <small class="text-muted-s">pedidos en curso</small>
+    </div>
+    <div class="stat">
+      <div style="margin-bottom:0.5rem;"><span class="ico"><i class="bi bi-tags-fill"></i></span></div>
+      <div class="n">3</div>
+      <small class="text-muted-s">ofertas por revisar</small>
+    </div>
+    <div class="stat solid">
+      <div style="margin-bottom:0.5rem;"><span class="ico" style="background:rgba(255,255,255,.12);color:var(--color-orange-sun);"><i class="bi bi-piggy-bank-fill"></i></span></div>
+      <div class="n">12,5%</div>
+      <small style="opacity:0.75;">ahorro promedio por compra</small>
+    </div>
+  </div>
+
+  <!-- Grupos + Actividad -->
+  <div style="display:grid; grid-template-columns:1fr; gap:1.5rem; margin-bottom:1.5rem;">
+    <!-- Grupos abiertos -->
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:1rem;">
+        <h3 style="font-size:1.25rem; margin:0;">Grupos abiertos para ti</h3>
+        <a href="/comerciante/grupo" style="font-weight:600; font-size:0.88rem;">Ver todos los grupos</a>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+
+        <!-- Grupo 1 -->
+        <div class="group-card">
+          <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+            <div class="tile t1">🍚</div>
+            <div>
+              <div style="font-weight:700;">Arroz Grano de Oro</div>
+              <small class="text-muted-s">Bolsa de 50 kg</small>
+              <div style="margin-top:0.25rem;"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Mercado Rodríguez</span></div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:0.25rem;">
+            <b>62 de 100 bolsas</b><span class="text-muted-s">9 comerciantes</span>
+          </div>
+          <div class="progress" style="margin-bottom:0.75rem;"><div class="progress-bar" style="width:62%;"></div></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+            <small style="color:#dc3545; font-weight:600;"><i class="bi bi-clock-history"></i> Cierra en 2 días</small>
+            <a href="/comerciante/grupo" class="btn btn-o btn-sm">Unirme</a>
+          </div>
+        </div>
+
+        <!-- Grupo 2 -->
+        <div class="group-card">
+          <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+            <div class="tile t3">🧴</div>
+            <div>
+              <div style="font-weight:700;">Detergente Ola 1 kg</div>
+              <small class="text-muted-s">Caja de 20 unidades</small>
+              <div style="margin-top:0.25rem;"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> El Alto, Ceja</span></div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:0.25rem;">
+            <b>38 de 60 cajas</b><span class="text-muted-s">6 comerciantes</span>
+          </div>
+          <div class="progress" style="margin-bottom:0.75rem;"><div class="progress-bar" style="width:63%;"></div></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+            <small class="text-muted-s"><i class="bi bi-clock-history"></i> Cierra en 6 días</small>
+            <a href="/comerciante/grupo" class="btn btn-o btn-sm">Unirme</a>
+          </div>
+        </div>
+
+        <!-- Grupo 3 -->
+        <div class="group-card">
+          <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+            <div class="tile t2">🍝</div>
+            <div>
+              <div style="font-weight:700;">Fideo Lucchetti tallarín</div>
+              <small class="text-muted-s">Caja de 20 paquetes</small>
+              <div style="margin-top:0.25rem;"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Gran Poder</span></div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:0.25rem;">
+            <b>84 de 100 cajas</b><span class="text-muted-s">11 comerciantes</span>
+          </div>
+          <div class="progress" style="margin-bottom:0.75rem;"><div class="progress-bar" style="width:84%;"></div></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+            <small style="color:#dc3545; font-weight:600;"><i class="bi bi-clock-history"></i> Cierra en 6 horas</small>
+            <a href="/comerciante/grupo" class="btn btn-o btn-sm">Unirme</a>
+          </div>
+        </div>
+
+        <!-- Grupo 4 -->
+        <div class="group-card">
+          <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+            <div class="tile t5">🥫</div>
+            <div>
+              <div style="font-weight:700;">Atún Sardimar en aceite</div>
+              <small class="text-muted-s">Caja de 48 latas</small>
+              <div style="margin-top:0.25rem;"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Villa Fátima</span></div>
+            </div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:0.25rem;">
+            <b>21 de 50 cajas</b><span class="text-muted-s">4 comerciantes</span>
+          </div>
+          <div class="progress" style="margin-bottom:0.75rem;"><div class="progress-bar" style="width:42%;"></div></div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+            <small class="text-muted-s"><i class="bi bi-clock-history"></i> Cierra en 9 días</small>
+            <a href="/comerciante/grupo" class="btn btn-o btn-sm">Unirme</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Actividad reciente -->
+    <div>
+      <h3 style="font-size:1.25rem; margin-bottom:0.75rem;">Actividad reciente</h3>
+      <div class="panel">
+        <div style="display:flex; gap:0.75rem; padding-bottom:0.75rem; margin-bottom:0.75rem; border-bottom:2px solid var(--color-orange-tint);">
+          <span class="ico"><i class="bi bi-tag-fill"></i></span>
+          <div style="font-size:0.88rem;"><b>Importadora Titicaca</b> envió una oferta de Bs 68 por caja de aceite.<div class="text-muted-s">Hace 12 min</div></div>
+        </div>
+        <div style="display:flex; gap:0.75rem; padding-bottom:0.75rem; margin-bottom:0.75rem; border-bottom:2px solid var(--color-orange-tint);">
+          <span class="ico"><i class="bi bi-person-plus-fill"></i></span>
+          <div style="font-size:0.88rem;"><b>Elena Apaza</b> se unió a tu grupo y pidió 10 cajas.<div class="text-muted-s">Hace 3 h</div></div>
+        </div>
+        <div style="display:flex; gap:0.75rem; padding-bottom:0.75rem; margin-bottom:0.75rem; border-bottom:2px solid var(--color-orange-tint);">
+          <span class="ico"><i class="bi bi-check2-circle"></i></span>
+          <div style="font-size:0.88rem;">Distribuidora Andina confirmó tu pago de <b>Bs 3.850</b>.<div class="text-muted-s">Ayer</div></div>
+        </div>
+        <div style="display:flex; gap:0.75rem;">
+          <span class="ico"><i class="bi bi-chat-dots-fill"></i></span>
+          <div style="font-size:0.88rem;"><b>Freddy Choque</b> comentó en el grupo del aceite.<div class="text-muted-s">Ayer</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Proveedores destacados -->
+  <h3 style="font-size:1.25rem; margin-bottom:0.75rem;">Proveedores destacados en La Paz</h3>
+  <div style="display:grid; grid-template-columns:1fr; gap:0.75rem;">
+    <div class="panel flat" style="display:flex; gap:0.75rem; align-items:center;">
+      <div class="avatar av1" style="width:52px;height:52px;border-radius:16px;font-size:1rem;">DA</div>
+      <div>
+        <div style="font-weight:700;">Distribuidora Andina S.R.L.</div>
+        <div style="font-size:0.88rem;"><span class="stars">★★★★★</span> 4,8 (126)</div>
+        <small class="text-muted-s">Abarrotes y aceites. Entrega en 3 días</small>
+      </div>
+    </div>
+    <div class="panel flat" style="display:flex; gap:0.75rem; align-items:center;">
+      <div class="avatar av2" style="width:52px;height:52px;border-radius:16px;font-size:1rem;">MS</div>
+      <div>
+        <div style="font-weight:700;">Mayorista El Sol</div>
+        <div style="font-size:0.88rem;"><span class="stars">★★★★☆</span> 4,6 (89)</div>
+        <small class="text-muted-s">Limpieza y bebidas. Entrega en 2 días</small>
+      </div>
+    </div>
+    <div class="panel flat" style="display:flex; gap:0.75rem; align-items:center;">
+      <div class="avatar av3" style="width:52px;height:52px;border-radius:16px;font-size:1rem;">IT</div>
+      <div>
+        <div style="font-weight:700;">Importadora Titicaca</div>
+        <div style="font-size:0.88rem;"><span class="stars">★★★★☆</span> 4,3 (54)</div>
+        <small class="text-muted-s">Importados a precio de volumen</small>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @media (min-width: 768px) {
+      .hero-col-left { grid-column: 1 / 2; }
+    }
+    @media (min-width: 992px) {
+      /* hero 2 cols */
+      .hero-c > div { grid-template-columns: 7fr 5fr !important; }
+      /* stats 4 cols */
+      div[style*="grid-template-columns:1fr 1fr"]:has(.stat) { grid-template-columns: repeat(4,1fr) !important; }
+      /* grupos + actividad 2 cols */
+      div[style*="gap:1.5rem; margin-bottom:1.5rem"] { grid-template-columns: 8fr 4fr !important; }
+      /* proveedores 3 cols */
+      div[style*="grid-template-columns:1fr"]:has(.panel.flat) { grid-template-columns: repeat(3,1fr) !important; }
+    }
+  </style>
+</AppLayout>

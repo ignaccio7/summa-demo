@@ -1,0 +1,212 @@
+---
+// comerciante/explorar.astro – Explorar productos (c-explore)
+import AppLayout from '../../layouts/AppLayout.astro';
+---
+<AppLayout pageTitle="Explorar" role="comerciante">
+
+  <!-- Búsqueda y filtros -->
+  <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; align-items:center; margin-bottom:1rem;">
+    <div class="input-group" style="max-width:100%;">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input class="form-control" placeholder="Busca aceite, arroz, detergente..." value="aceite" id="search-input" style="border-radius:0; border-left:0;">
+    </div>
+    <div style="display:flex; gap:0.5rem;">
+      <select class="form-select" aria-label="Ciudad">
+        <option>La Paz</option>
+        <option>El Alto</option>
+        <option>Cochabamba</option>
+      </select>
+      <select class="form-select" aria-label="Ordenar">
+        <option>Más relevante</option>
+        <option>Menor precio</option>
+        <option>Mejor calificado</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Chips de categoría -->
+  <div class="chips" style="margin-bottom:1.25rem;" id="chips">
+    <button class="chip active" onclick="filterChip(this)">Todo</button>
+    <button class="chip" onclick="filterChip(this)">Abarrotes</button>
+    <button class="chip" onclick="filterChip(this)">Limpieza</button>
+    <button class="chip" onclick="filterChip(this)">Bebidas</button>
+    <button class="chip" onclick="filterChip(this)">Ferretería</button>
+    <button class="chip" onclick="filterChip(this)">Papelería</button>
+    <button class="chip" onclick="filterChip(this)">Con precio por volumen</button>
+    <button class="chip" onclick="filterChip(this)">Con grupo abierto</button>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+    <h2 style="font-size:1.1rem; margin:0;">6 productos encontrados</h2>
+    <small class="text-muted-s">Precios por caja, en bolivianos</small>
+  </div>
+
+  <!-- Grid de productos -->
+  <div style="display:grid; grid-template-columns:1fr; gap:0.75rem;" class="products-grid">
+
+    <!-- Aceite Fino -->
+    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
+      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+        <div class="tile lg t2">🛢️</div>
+        <div>
+          <div style="font-weight:700;">Aceite Fino 900 ml</div>
+          <small class="text-muted-s">Caja x12 · Distribuidora Andina</small>
+          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,8</div>
+        </div>
+      </div>
+      <table class="price-table" style="margin-bottom:0.75rem;">
+        <tbody>
+          <tr><td>1 a 49 cajas</td><td style="text-align:right; font-weight:700;">Bs 80</td></tr>
+          <tr><td>50 a 99 cajas</td><td style="text-align:right; font-weight:700;">Bs 74</td></tr>
+          <tr class="active-row"><td>100 o más</td><td class="price-highlight">Bs 68</td></tr>
+        </tbody>
+      </table>
+      <span class="badge-s b-ok" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 100 de 100</span>
+      <div style="display:flex; gap:0.5rem; margin-top:auto;">
+        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 caja de aceite')">Comprar</button>
+        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Ver grupo</a>
+      </div>
+    </div>
+
+    <!-- Arroz -->
+    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
+      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+        <div class="tile lg t1">🍚</div>
+        <div>
+          <div style="font-weight:700;">Arroz Grano de Oro</div>
+          <small class="text-muted-s">Bolsa 50 kg · Mayorista El Sol</small>
+          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,6</div>
+        </div>
+      </div>
+      <table class="price-table" style="margin-bottom:0.75rem;">
+        <tbody>
+          <tr><td>1 a 49 bolsas</td><td style="text-align:right; font-weight:700;">Bs 305</td></tr>
+          <tr><td>50 a 99 bolsas</td><td style="text-align:right; font-weight:700;">Bs 292</td></tr>
+          <tr class="active-row"><td>100 o más</td><td class="price-highlight">Bs 279</td></tr>
+        </tbody>
+      </table>
+      <span class="badge-s b-warn" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 62 de 100</span>
+      <div style="display:flex; gap:0.5rem; margin-top:auto;">
+        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 bolsa de arroz')">Comprar</button>
+        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Unirme</a>
+      </div>
+    </div>
+
+    <!-- Azúcar -->
+    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
+      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+        <div class="tile lg t6">🍬</div>
+        <div>
+          <div style="font-weight:700;">Azúcar Guabirá</div>
+          <small class="text-muted-s">Quintal 50 kg · Distribuidora Andina</small>
+          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,8</div>
+        </div>
+      </div>
+      <table class="price-table" style="margin-bottom:0.75rem;">
+        <tbody>
+          <tr><td>1 a 49 quintales</td><td style="text-align:right; font-weight:700;">Bs 410</td></tr>
+          <tr><td>50 a 99 quintales</td><td style="text-align:right; font-weight:700;">Bs 395</td></tr>
+          <tr class="active-row"><td>100 o más</td><td class="price-highlight">Bs 385</td></tr>
+        </tbody>
+      </table>
+      <span class="badge-s b-tint" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-plus-circle-fill"></i> Sin grupo abierto todavía</span>
+      <div style="display:flex; gap:0.5rem; margin-top:auto;">
+        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 quintal de azúcar')">Comprar</button>
+        <button class="btn btn-o btn-sm" style="flex:1;" onclick="window.toast('Se abre el formulario para crear un grupo')">Crear grupo</button>
+      </div>
+    </div>
+
+    <!-- Detergente -->
+    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
+      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+        <div class="tile lg t3">🧴</div>
+        <div>
+          <div style="font-weight:700;">Detergente Ola 1 kg</div>
+          <small class="text-muted-s">Caja x20 · Mayorista El Sol</small>
+          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,6</div>
+        </div>
+      </div>
+      <table class="price-table" style="margin-bottom:0.75rem;">
+        <tbody>
+          <tr><td>1 a 29 cajas</td><td style="text-align:right; font-weight:700;">Bs 190</td></tr>
+          <tr><td>30 a 59 cajas</td><td style="text-align:right; font-weight:700;">Bs 178</td></tr>
+          <tr class="active-row"><td>60 o más</td><td class="price-highlight">Bs 169</td></tr>
+        </tbody>
+      </table>
+      <span class="badge-s b-warn" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 38 de 60</span>
+      <div style="display:flex; gap:0.5rem; margin-top:auto;">
+        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 caja de detergente')">Comprar</button>
+        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Unirme</a>
+      </div>
+    </div>
+
+    <!-- Atún -->
+    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
+      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+        <div class="tile lg t5">🥫</div>
+        <div>
+          <div style="font-weight:700;">Atún Sardimar en aceite</div>
+          <small class="text-muted-s">Caja x48 · Importadora Titicaca</small>
+          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,3</div>
+        </div>
+      </div>
+      <table class="price-table" style="margin-bottom:0.75rem;">
+        <tbody>
+          <tr><td>1 a 24 cajas</td><td style="text-align:right; font-weight:700;">Bs 336</td></tr>
+          <tr><td>25 a 49 cajas</td><td style="text-align:right; font-weight:700;">Bs 318</td></tr>
+          <tr class="active-row"><td>50 o más</td><td class="price-highlight">Bs 299</td></tr>
+        </tbody>
+      </table>
+      <span class="badge-s b-tint" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-people-fill"></i> 1 grupo abierto: 21 de 50</span>
+      <div style="display:flex; gap:0.5rem; margin-top:auto;">
+        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 caja de atún')">Comprar</button>
+        <a href="/comerciante/grupo" class="btn btn-o btn-sm" style="flex:1; justify-content:center;">Unirme</a>
+      </div>
+    </div>
+
+    <!-- Refresco -->
+    <div class="panel" style="display:flex; flex-direction:column; height:100%;">
+      <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+        <div class="tile lg t4">🥤</div>
+        <div>
+          <div style="font-weight:700;">Refresco Cielo 2 litros</div>
+          <small class="text-muted-s">Paquete x8 · Mayorista El Sol</small>
+          <div style="font-size:0.88rem; margin-top:0.25rem;"><span class="stars">★</span> 4,6</div>
+        </div>
+      </div>
+      <table class="price-table" style="margin-bottom:0.75rem;">
+        <tbody>
+          <tr><td>1 a 39 paquetes</td><td style="text-align:right; font-weight:700;">Bs 74</td></tr>
+          <tr><td>40 a 79 paquetes</td><td style="text-align:right; font-weight:700;">Bs 69</td></tr>
+          <tr class="active-row"><td>80 o más</td><td class="price-highlight">Bs 64</td></tr>
+        </tbody>
+      </table>
+      <span class="badge-s b-tint" style="margin-bottom:0.75rem; align-self:flex-start;"><i class="bi bi-plus-circle-fill"></i> Sin grupo abierto todavía</span>
+      <div style="display:flex; gap:0.5rem; margin-top:auto;">
+        <button class="btn btn-o-line btn-sm" style="flex:1;" onclick="window.toast('Agregado al carrito: 1 paquete de refresco')">Comprar</button>
+        <button class="btn btn-o btn-sm" style="flex:1;" onclick="window.toast('Se abre el formulario para crear un grupo')">Crear grupo</button>
+      </div>
+    </div>
+
+  </div>
+
+  <style>
+    @media (min-width: 576px) {
+      div[style*="grid-template-columns:1fr"]:has(>.input-group) {
+        grid-template-columns: 1fr auto !important;
+      }
+      .products-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+    @media (min-width: 1200px) {
+      .products-grid { grid-template-columns: repeat(3, 1fr) !important; }
+    }
+  </style>
+
+  <script>
+    function filterChip(el: HTMLButtonElement) {
+      document.querySelectorAll('#chips .chip').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+    }
+    (window as any).filterChip = filterChip;
+  </script>
+</AppLayout>

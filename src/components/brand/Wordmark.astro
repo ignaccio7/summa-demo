@@ -1,0 +1,15 @@
+---
+// Wordmark.astro – Logo de Summa con ícono SVG
+interface Props {
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  white?: boolean;
+}
+const { size = 'md', white = false } = Astro.props;
+const sizeClass = { sm: 'text-xl', md: 'text-2xl', lg: 'text-3xl', xl: 'text-4xl' }[size];
+const markId = white ? 'mark-w' : 'mark';
+const dotStyle = white ? 'color:#2A1408' : '';
+---
+<span class={`wordmark ${sizeClass}`}>
+  <svg><use href={`#${markId}`}/></svg>
+  <span>summa<span class="dot" style={dotStyle}>.</span></span>
+</span>

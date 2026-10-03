@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Summa | Juntos compramos como grandes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+<style>
+:root{
+  --o:#FF6B00; --o-deep:#D94F00; --o-sun:#FFB067; --o-tint:#FFF1E6; --o-line:#FFD9BF;
+  --ink:#2A1408; --muted:#7A5C48; --ok:#1F9D63; --white:#fff;
+  --f-display:'Bricolage Grotesque',system-ui,sans-serif; --f-body:'Figtree',system-ui,sans-serif;
+}
+*{-webkit-tap-highlight-color:transparent}
+body{font-family:var(--f-body);color:var(--ink);background:#fff;font-size:.97rem}
+h1,h2,h3,h4,h5,h6,.display-f{font-family:var(--f-display);letter-spacing:-.02em;font-weight:700}
+a{color:var(--o-deep)}
+:focus-visible{outline:3px solid var(--o);outline-offset:2px;border-radius:6px}
+.text-muted-s{color:var(--muted)!important}
+.text-o{color:var(--o)!important}
+
+/* Marca */
+.wordmark{font-family:var(--f-display);font-weight:800;letter-spacing:-.055em;line-height:1;display:inline-flex;align-items:center;gap:.35rem}
+.wordmark svg{width:1.55em;height:1.55em;flex:none}
+.wordmark b{font-weight:800}
+.wordmark .dot{color:var(--o)}
+
+/* Botones */
+.btn{font-weight:600;border-radius:12px;padding:.6rem 1.1rem}
+.btn-o{background:var(--o);color:#fff;border:2px solid var(--o)}
+.btn-o:hover,.btn-o:focus{background:var(--o-deep);border-color:var(--o-deep);color:#fff}
+.btn-o-line{background:#fff;color:var(--o-deep);border:2px solid var(--o-line)}
+.btn-o-line:hover{border-color:var(--o);color:var(--o-deep);background:var(--o-tint)}
+.btn-white{background:#fff;color:var(--o-deep);border:2px solid #fff}
+.btn-white:hover{background:var(--o-tint);color:var(--o-deep)}
+.btn-sm{padding:.4rem .8rem;border-radius:10px;font-size:.88rem}
+
+/* Formularios */
+.form-control,.form-select{border:2px solid var(--o-line);border-radius:12px;padding:.65rem .9rem;background:#fff;color:var(--ink)}
+.form-control:focus,.form-select:focus{border-color:var(--o);box-shadow:0 0 0 .25rem rgba(255,107,0,.15)}
+.form-label{font-weight:600;font-size:.9rem;margin-bottom:.3rem}
+.input-group-text{background:var(--o-tint);border:2px solid var(--o-line);color:var(--o-deep);font-weight:600}
+
+/* Login */
+.login-side{background:var(--o);color:#fff;position:relative;overflow:hidden;min-height:100%}
+.login-side .ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.28)}
+.login-side .ring.r1{width:520px;height:520px;right:-190px;top:-160px}
+.login-side .ring.r2{width:340px;height:340px;right:-90px;top:-70px;background:rgba(255,255,255,.08)}
+.login-side .ring.r3{width:420px;height:420px;left:-170px;bottom:-190px;background:rgba(255,255,255,.1)}
+.login-big{font-size:clamp(2.2rem,4.4vw,3.6rem);line-height:1.02;font-weight:800;letter-spacing:-.04em}
+.calc-chip{background:#fff;color:var(--ink);border-radius:18px;padding:1rem 1.2rem;display:inline-block;min-width:270px}
+.calc-chip .row-c{display:flex;justify-content:space-between;gap:1.5rem;font-size:.95rem;padding:.15rem 0}
+.calc-chip .row-c.total{border-top:2px dashed var(--o-line);margin-top:.4rem;padding-top:.5rem;font-weight:700;color:var(--o-deep)}
+.demo-pill{border:2px dashed var(--o-line);border-radius:14px;padding:.8rem 1rem;background:var(--o-tint)}
+
+/* Layout app */
+#app{min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;width:270px;background:#fff;border-right:2px solid var(--o-tint);padding:1.4rem 1rem;z-index:1030}
+.side-link{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;border-radius:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-bottom:.25rem;border:0;background:none;width:100%;text-align:left}
+.side-link i{font-size:1.2rem}
+.side-link:hover{background:var(--o-tint);color:var(--o-deep)}
+.side-link.active{background:var(--o);color:#fff}
+.side-user{border:2px solid var(--o-tint);border-radius:16px;padding:.8rem}
+.main-wrap{margin-left:0}
+@media(min-width:992px){.main-wrap{margin-left:270px}}
+.topbar{position:sticky;top:0;z-index:1020;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:2px solid var(--o-tint);padding:.75rem 0}
+.role-toggle{background:var(--o-tint);border-radius:999px;padding:4px;display:inline-flex}
+.role-toggle button{border:0;background:none;border-radius:999px;padding:.35rem .9rem;font-weight:600;font-size:.88rem;color:var(--muted)}
+.role-toggle button.active{background:var(--o);color:#fff}
+.bell{position:relative;border:2px solid var(--o-line);background:#fff;border-radius:12px;width:42px;height:42px;display:grid;place-items:center;color:var(--o-deep)}
+.bell .badge-n{position:absolute;top:-6px;right:-6px;background:var(--o);color:#fff;font-size:.68rem;border-radius:999px;padding:.15rem .4rem;font-weight:700}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:2px solid var(--o-tint);display:flex;justify-content:space-around;padding:.4rem .25rem calc(.4rem + env(safe-area-inset-bottom,0px));z-index:1030}
+.bottom-nav button{border:0;background:none;color:var(--muted);display:flex;flex-direction:column;align-items:center;font-size:.72rem;font-weight:600;gap:2px;padding:.3rem .7rem;border-radius:12px;flex:1}
+.bottom-nav button i{font-size:1.3rem}
+.bottom-nav button.active{color:var(--o-deep)}
+.bottom-nav button.active i{background:var(--o);color:#fff;border-radius:999px;padding:.05rem .9rem}
+main.content{padding:1.5rem 0 6rem}
+@media(min-width:992px){main.content{padding-bottom:3rem}}
+.page{display:none}
+.page.active{display:block}
+
+/* Tarjetas */
+.panel{background:#fff;border:2px solid var(--o-tint);border-radius:20px;padding:1.25rem}
+.panel.flat{border-color:var(--o-line)}
+.panel-tint{background:var(--o-tint);border-radius:20px;padding:1.25rem}
+.hero-c{background:var(--o);color:#fff;border-radius:28px;padding:1.6rem;position:relative;overflow:hidden}
+.hero-c::after{content:"";position:absolute;right:-70px;bottom:-110px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.13)}
+.hero-c::before{content:"";position:absolute;right:60px;top:-90px;width:170px;height:170px;border-radius:50%;border:2px solid rgba(255,255,255,.3)}
+.hero-c .search{background:#fff;border-radius:16px;padding:.35rem .35rem .35rem 1rem;display:flex;align-items:center;gap:.6rem;position:relative;z-index:1}
+.hero-c .search input{border:0;box-shadow:none;padding:.5rem 0}
+.hero-c .search input:focus{box-shadow:none}
+.stat{border-radius:16px;padding:1rem 1.1rem;border:2px solid var(--o-tint);background:#fff;height:100%}
+.stat .n{font-family:var(--f-display);font-weight:800;font-size:1.9rem;letter-spacing:-.04em;line-height:1}
+.stat.solid{background:var(--ink);color:#fff;border-color:var(--ink)}
+.stat.solid .n{color:var(--o-sun)}
+.ico{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--o-tint);color:var(--o-deep);font-size:1.25rem;flex:none}
+.tile{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;font-size:2rem;flex:none}
+.tile.lg{width:84px;height:84px;font-size:2.7rem;border-radius:24px}
+.t1{background:#FFE3C7}.t2{background:#FFF0C2}.t3{background:#FFD6CC}.t4{background:#FFEBD9}.t5{background:#FFE0B8}.t6{background:#FFD9BF}
+.badge-s{display:inline-flex;align-items:center;gap:.3rem;border-radius:999px;padding:.28rem .7rem;font-size:.78rem;font-weight:700}
+.b-o{background:var(--o);color:#fff}
+.b-tint{background:var(--o-tint);color:var(--o-deep)}
+.b-ok{background:#DDF5E9;color:#12724A}
+.b-warn{background:#FFF0C2;color:#8A5A00}
+.b-ink{background:var(--ink);color:#fff}
+.progress{height:12px;border-radius:999px;background:var(--o-tint)}
+.progress-bar{background:var(--o);border-radius:999px}
+.progress.done .progress-bar{background:var(--ok)}
+.group-card{border:2px solid var(--o-tint);border-radius:18px;padding:1.1rem;background:#fff;height:100%;display:flex;flex-direction:column}
+.group-card:hover{border-color:var(--o-line)}
+.chip{border:2px solid var(--o-line);background:#fff;color:var(--ink);border-radius:999px;padding:.4rem .95rem;font-weight:600;font-size:.88rem;white-space:nowrap}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.4rem;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.avatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;color:#fff;flex:none;font-size:.95rem}
+.av1{background:#FF6B00}.av2{background:#2A1408}.av3{background:#D94F00}.av4{background:#E89A3C}.av5{background:#8A4A1F}
+.stars{color:#F5A000;letter-spacing:1px}
+.money{font-family:var(--f-display);font-weight:800;letter-spacing:-.03em}
+.divider-dash{border-top:2px dashed var(--o-line)}
+
+/* Ofertas */
+.offer{border:2px solid var(--o-tint);border-radius:20px;padding:1.2rem;background:#fff;height:100%;display:flex;flex-direction:column;transition:border-color .15s, background .15s}
+.offer.selected{border-color:var(--o);background:#FFFAF5;box-shadow:0 0 0 4px rgba(255,107,0,.12)}
+.offer .price{font-size:2.3rem;line-height:1}
+.offer ul{list-style:none;padding:0;margin:0}
+.offer li{display:flex;justify-content:space-between;gap:1rem;padding:.4rem 0;border-bottom:1px dashed var(--o-line);font-size:.92rem}
+.offer li:last-child{border-bottom:0}
+.your-cost{border-radius:14px;background:var(--o-tint);padding:.7rem .9rem}
+.offer.selected .your-cost{background:var(--o);color:#fff}
+.summary-bar{background:var(--ink);color:#fff;border-radius:20px;padding:1.1rem 1.3rem}
+
+/* Tabs */
+.nav-pills-s{gap:.4rem;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;border-bottom:2px solid var(--o-tint);padding-bottom:.6rem}
+.nav-pills-s::-webkit-scrollbar{display:none}
+.nav-pills-s .nav-link{border-radius:12px;color:var(--muted);font-weight:600;white-space:nowrap;padding:.5rem 1rem}
+.nav-pills-s .nav-link.active{background:var(--o);color:#fff}
+
+/* Comentarios */
+.bubble{background:var(--o-tint);border-radius:4px 18px 18px 18px;padding:.7rem .95rem;display:inline-block;max-width:100%}
+.bubble.me{background:var(--o);color:#fff;border-radius:18px 4px 18px 18px}
+
+/* Stepper de pedido */
+.stepper{display:flex;overflow-x:auto;padding:.4rem 0 .2rem;scrollbar-width:none}
+.stepper::-webkit-scrollbar{display:none}
+.step{flex:1;min-width:104px;text-align:center;position:relative;font-size:.85rem;font-weight:600;color:var(--muted)}
+.step::before{content:"";position:absolute;top:19px;left:-50%;width:100%;height:4px;background:var(--o-tint);z-index:0}
+.step:first-child::before{display:none}
+.step .dot{width:40px;height:40px;border-radius:50%;margin:0 auto .5rem;display:grid;place-items:center;background:#fff;border:3px solid var(--o-line);position:relative;z-index:1;color:var(--o-line)}
+.step.done{color:var(--ink)}
+.step.done::before,.step.current::before{background:var(--o)}
+.step.done .dot{background:var(--o);border-color:var(--o);color:#fff}
+.step.current{color:var(--o-deep)}
+.step.current .dot{border-color:var(--o);color:var(--o);box-shadow:0 0 0 6px rgba(255,107,0,.16)}
+
+/* Timeline vertical */
+.vt{list-style:none;margin:0;padding:0 0 0 .3rem}
+.vt li{position:relative;padding:0 0 1.3rem 2.2rem;border-left:3px solid var(--o-tint);margin-left:.8rem}
+.vt li:last-child{border-left-color:transparent;padding-bottom:0}
+.vt li .pt{position:absolute;left:-1.02rem;top:0;width:1.7rem;height:1.7rem;border-radius:50%;background:#fff;border:3px solid var(--o-line);display:grid;place-items:center;font-size:.8rem;color:var(--o-line)}
+.vt li.done{border-left-color:var(--o)}
+.vt li.done .pt{background:var(--o);border-color:var(--o);color:#fff}
+.vt li.now .pt{border-color:var(--o);color:var(--o);box-shadow:0 0 0 5px rgba(255,107,0,.16)}
+
+/* Barras */
+.bars{display:flex;align-items:flex-end;gap:.7rem;height:150px}
+.bars .bar{flex:1;background:var(--o-line);border-radius:10px 10px 4px 4px;position:relative;min-width:0}
+.bars .bar.hi{background:var(--o)}
+.bars .bar span{position:absolute;bottom:-1.5rem;left:0;right:0;text-align:center;font-size:.75rem;color:var(--muted);font-weight:600}
+.bars .bar em{position:absolute;top:-1.4rem;left:0;right:0;text-align:center;font-size:.72rem;font-style:normal;font-weight:700}
+
+.table>:not(caption)>*>*{padding:.8rem .6rem;border-bottom-color:var(--o-tint);vertical-align:middle}
+.table thead th{font-family:var(--f-display);font-size:.88rem;color:var(--muted);font-weight:700;border-bottom:2px solid var(--o-line)}
+.dropdown-menu{border:2px solid var(--o-tint);border-radius:16px;padding:.5rem}
+.dropdown-item{border-radius:10px;white-space:normal;padding:.6rem .8rem}
+.dropdown-item:hover{background:var(--o-tint)}
+.toast-s{position:fixed;left:50%;bottom:90px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:.75rem 1.2rem;border-radius:14px;font-weight:600;opacity:0;pointer-events:none;transition:.25s;z-index:2000;max-width:90vw;text-align:center}
+.toast-s.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<!-- Símbolos de marca -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 48 48">
+    <circle cx="17" cy="19" r="11.5" fill="#FF6B00"/>
+    <circle cx="31" cy="19" r="11.5" fill="#FFB067" style="mix-blend-mode:multiply"/>
+    <circle cx="24" cy="31" r="11.5" fill="#2A1408" fill-opacity=".92"/>
+  </symbol>
+  <symbol id="mark-w" viewBox="0 0 48 48">
+    <circle cx="17" cy="19" r="11.5" fill="#fff"/>
+    <circle cx="31" cy="19" r="11.5" fill="#fff" fill-opacity=".6"/>
+    <circle cx="24" cy="31" r="11.5" fill="#2A1408"/>
+  </symbol>
+</svg>
+
+<!-- ============ LOGIN ============ -->
+<section id="login">
+  <div class="container-fluid p-0">
+    <div class="row g-0 min-vh-100">
+      <div class="col-lg-6 order-lg-1">
+        <div class="login-side d-flex flex-column justify-content-between p-4 p-md-5 h-100">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+          <div class="wordmark fs-2 position-relative"><svg><use href="#mark-w"/></svg><span>summa<span style="color:#2A1408">.</span></span></div>
+          <div class="position-relative my-5">
+            <h1 class="login-big mb-4">Un comerciante compra poco.<br>Cien juntos compran como grandes.</h1>
+            <div class="calc-chip mb-3">
+              <div class="row-c"><span>Carmen</span><span>20 x Bs 70</span><b>Bs 1.400</b></div>
+              <div class="row-c"><span>Julián</span><span>30 x Bs 70</span><b>Bs 2.100</b></div>
+              <div class="row-c"><span>Rosa</span><span>50 x Bs 70</span><b>Bs 3.500</b></div>
+              <div class="row-c total"><span>Pedido del grupo</span><span>100 cajas</span><b>Bs 7.000</b></div>
+            </div>
+            <p class="mb-0 opacity-75" style="max-width:34ch">Cada uno paga solo lo suyo y recibe su propia mercadería.</p>
+          </div>
+          <div class="position-relative d-flex gap-4 flex-wrap">
+            <div><div class="money fs-3">1.240</div><small class="opacity-75">comerciantes en lista de espera</small></div>
+            <div><div class="money fs-3">38</div><small class="opacity-75">proveedores interesados</small></div>
+            <div><div class="money fs-3">Bs 1,8 M</div><small class="opacity-75">en pedidos simulados</small></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6 d-flex align-items-center">
+        <div class="w-100 p-4 p-md-5 mx-auto" style="max-width:520px">
+          <h2 class="mb-1" style="font-size:2rem">Ingresa a Summa</h2>
+          <p class="text-muted-s mb-4">Busca proveedores, únete a un grupo y compra mejor.</p>
+          <div class="mb-3">
+            <label class="form-label" for="lg-mail">Correo</label>
+            <input id="lg-mail" class="form-control" type="email" value="carmen@abarrotesandes.bo">
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="lg-pass">Contraseña</label>
+            <div class="input-group">
+              <input id="lg-pass" class="form-control" type="password" value="summa2026" style="border-right:0;border-radius:12px 0 0 12px">
+              <button class="btn btn-o-line" type="button" style="border-radius:0 12px 12px 0" onclick="const i=document.getElementById('lg-pass');i.type=i.type==='password'?'text':'password'" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mb-4 small">
+            <div class="form-check"><input class="form-check-input" type="checkbox" id="rec" checked><label class="form-check-label" for="rec">Mantener sesión</label></div>
+            <a href="#" onclick="toast('Te enviamos un enlace para cambiar tu contraseña');return false">Olvidé mi contraseña</a>
+          </div>
+          <button class="btn btn-o w-100 py-3 mb-3" onclick="enter('c')">Ingresar</button>
+          <div class="text-center small mb-4">¿Aún no tienes cuenta? <a href="#" onclick="toast('Aquí se elige el rol: comerciante o proveedor');return false">Crear cuenta gratis</a></div>
+          <div class="demo-pill">
+            <div class="fw-bold mb-2"><i class="bi bi-lightning-charge-fill text-o"></i> Cuentas de demostración</div>
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-o-line btn-sm" onclick="enter('c')"><i class="bi bi-shop"></i> Comerciante</button>
+              <button class="btn btn-o-line btn-sm" onclick="enter('p')"><i class="bi bi-truck"></i> Proveedor</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ APP ============ -->
+<div id="app" class="d-none">
+  <aside class="sidebar d-none d-lg-flex flex-column">
+    <div class="wordmark fs-3 px-2 mb-4"><svg><use href="#mark"/></svg><span>summa<span class="dot">.</span></span></div>
+    <nav id="side-nav" class="flex-grow-1" aria-label="Navegación principal"></nav>
+    <div class="side-user">
+      <div class="d-flex align-items-center gap-2 mb-2">
+        <div class="avatar av1" id="su-av">CQ</div>
+        <div class="lh-sm"><div class="fw-bold" id="su-name">Carmen Quispe</div><small class="text-muted-s" id="su-biz">Abarrotes Los Andes</small></div>
+      </div>
+      <button class="btn btn-o-line btn-sm w-100" onclick="logout()"><i class="bi bi-box-arrow-left"></i> Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <div class="main-wrap">
+    <header class="topbar">
+      <div class="container-xxl d-flex align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-3">
+          <div class="wordmark fs-4 d-lg-none"><svg><use href="#mark"/></svg><span>summa<span class="dot">.</span></span></div>
+          <h1 class="h5 mb-0 d-none d-lg-block" id="page-title">Inicio</h1>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <div class="role-toggle" role="group" aria-label="Cambiar de rol para la demo">
+            <button id="rt-c" class="active" onclick="enter('c')">Comerciante</button>
+            <button id="rt-p" onclick="enter('p')">Proveedor</button>
+          </div>
+          <div class="dropdown">
+            <button class="bell" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-label="Notificaciones"><i class="bi bi-bell-fill"></i><span class="badge-n">3</span></button>
+            <ul class="dropdown-menu dropdown-menu-end p-2" style="width:min(340px,90vw)">
+              <li class="px-2 pb-2 fw-bold">Notificaciones</li>
+              <li><a class="dropdown-item" href="#"><div class="fw-semibold">Llegó una nueva oferta</div><small class="text-muted-s">Importadora Titicaca ofrece Bs 68 por caja. Hace 12 min</small></a></li>
+              <li><a class="dropdown-item" href="#"><div class="fw-semibold">La votación cierra mañana a las 18:00</div><small class="text-muted-s">Grupo Aceite Fino 900 ml. Hace 2 h</small></a></li>
+              <li><a class="dropdown-item" href="#"><div class="fw-semibold">Tu pedido pasó a preparación</div><small class="text-muted-s">Pedido SM-2041. Ayer</small></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <div class="container-xxl">
+
+<!-- ===== COMERCIANTE: INICIO ===== -->
+<section id="c-home" class="page" data-title="Inicio">
+  <div class="hero-c mb-4">
+    <div class="row align-items-center g-3 position-relative" style="z-index:1">
+      <div class="col-lg-7">
+        <h2 class="display-f mb-1" style="font-size:clamp(1.7rem,3.4vw,2.4rem);font-weight:800;letter-spacing:-.035em">Hola, Carmen. Tienes 1 votación por cerrar.</h2>
+        <p class="mb-3 opacity-90">Abarrotes Los Andes, zona Rodríguez, La Paz</p>
+        <div class="search">
+          <i class="bi bi-search text-o"></i>
+          <input class="form-control" placeholder="¿Qué necesitas comprar esta semana?" aria-label="Buscar productos">
+          <button class="btn btn-o" onclick="go('c-explore')">Buscar</button>
+        </div>
+      </div>
+      <div class="col-lg-5">
+        <div class="bg-white text-dark rounded-4 p-3">
+          <div class="small text-muted-s">Ahorro acumulado con Summa</div>
+          <div class="money" style="font-size:2.5rem;color:var(--o-deep)">Bs 1.240</div>
+          <div class="small">en 6 compras colectivas desde junio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3"><div class="stat"><div class="d-flex align-items-center gap-2 mb-2"><span class="ico"><i class="bi bi-people-fill"></i></span></div><div class="n">3</div><small class="text-muted-s">grupos activos</small></div></div>
+    <div class="col-6 col-md-3"><div class="stat"><div class="d-flex align-items-center gap-2 mb-2"><span class="ico"><i class="bi bi-box-seam-fill"></i></span></div><div class="n">2</div><small class="text-muted-s">pedidos en curso</small></div></div>
+    <div class="col-6 col-md-3"><div class="stat"><div class="d-flex align-items-center gap-2 mb-2"><span class="ico"><i class="bi bi-tags-fill"></i></span></div><div class="n">3</div><small class="text-muted-s">ofertas por revisar</small></div></div>
+    <div class="col-6 col-md-3"><div class="stat solid"><div class="d-flex align-items-center gap-2 mb-2"><span class="ico" style="background:rgba(255,255,255,.12);color:var(--o-sun)"><i class="bi bi-piggy-bank-fill"></i></span></div><div class="n">12,5%</div><small class="opacity-75">ahorro promedio por compra</small></div></div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    <div class="col-lg-8">
+      <div class="d-flex justify-content-between align-items-end mb-3">
+        <h3 class="h4 mb-0">Grupos abiertos para ti</h3>
+        <a href="#" onclick="go('c-group');return false" class="fw-semibold small">Ver todos los grupos</a>
+      </div>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="group-card">
+            <div class="d-flex gap-3 mb-3"><div class="tile t1">🍚</div><div><div class="fw-bold">Arroz Grano de Oro</div><small class="text-muted-s">Bolsa de 50 kg</small><div class="mt-1"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Mercado Rodríguez</span></div></div></div>
+            <div class="d-flex justify-content-between small mb-1"><b>62 de 100 bolsas</b><span class="text-muted-s">9 comerciantes</span></div>
+            <div class="progress mb-3"><div class="progress-bar" style="width:62%"></div></div>
+            <div class="d-flex justify-content-between align-items-center mt-auto"><small class="text-danger fw-semibold"><i class="bi bi-clock-history"></i> Cierra en 2 días</small><button class="btn btn-o btn-sm" onclick="go('c-group')">Unirme</button></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="group-card">
+            <div class="d-flex gap-3 mb-3"><div class="tile t3">🧴</div><div><div class="fw-bold">Detergente Ola 1 kg</div><small class="text-muted-s">Caja de 20 unidades</small><div class="mt-1"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> El Alto, Ceja</span></div></div></div>
+            <div class="d-flex justify-content-between small mb-1"><b>38 de 60 cajas</b><span class="text-muted-s">6 comerciantes</span></div>
+            <div class="progress mb-3"><div class="progress-bar" style="width:63%"></div></div>
+            <div class="d-flex justify-content-between align-items-center mt-auto"><small class="text-muted-s"><i class="bi bi-clock-history"></i> Cierra en 6 días</small><button class="btn btn-o btn-sm" onclick="go('c-group')">Unirme</button></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="group-card">
+            <div class="d-flex gap-3 mb-3"><div class="tile t2">🍝</div><div><div class="fw-bold">Fideo Lucchetti tallarín</div><small class="text-muted-s">Caja de 20 paquetes</small><div class="mt-1"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Gran Poder</span></div></div></div>
+            <div class="d-flex justify-content-between small mb-1"><b>84 de 100 cajas</b><span class="text-muted-s">11 comerciantes</span></div>
+            <div class="progress mb-3"><div class="progress-bar" style="width:84%"></div></div>
+            <div class="d-flex justify-content-between align-items-center mt-auto"><small class="text-danger fw-semibold"><i class="bi bi-clock-history"></i> Cierra en 6 horas</small><button class="btn btn-o btn-sm" onclick="go('c-group')">Unirme</button></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="group-card">
+            <div class="d-flex gap-3 mb-3"><div class="tile t5">🥫</div><div><div class="fw-bold">Atún Sardimar en aceite</div><small class="text-muted-s">Caja de 48 latas</small><div class="mt-1"><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Villa Fátima</span></div></div></div>
+            <div class="d-flex justify-content-between small mb-1"><b>21 de 50 cajas</b><span class="text-muted-s">4 comerciantes</span></div>
+            <div class="progress mb-3"><div class="progress-bar" style="width:42%"></div></div>
+            <div class="d-flex justify-content-between align-items-center mt-auto"><small class="text-muted-s"><i class="bi bi-clock-history"></i> Cierra en 9 días</small><button class="btn btn-o btn-sm" onclick="go('c-group')">Unirme</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <h3 class="h4 mb-3">Actividad reciente</h3>
+      <div class="panel">
+        <div class="d-flex gap-3 pb-3 mb-3 border-bottom" style="border-color:var(--o-tint)!important"><span class="ico"><i class="bi bi-tag-fill"></i></span><div class="small"><b>Importadora Titicaca</b> envió una oferta de Bs 68 por caja de aceite.<div class="text-muted-s">Hace 12 min</div></div></div>
+        <div class="d-flex gap-3 pb-3 mb-3 border-bottom" style="border-color:var(--o-tint)!important"><span class="ico"><i class="bi bi-person-plus-fill"></i></span><div class="small"><b>Elena Apaza</b> se unió a tu grupo y pidió 10 cajas.<div class="text-muted-s">Hace 3 h</div></div></div>
+        <div class="d-flex gap-3 pb-3 mb-3 border-bottom" style="border-color:var(--o-tint)!important"><span class="ico"><i class="bi bi-check2-circle"></i></span><div class="small">Distribuidora Andina confirmó tu pago de <b>Bs 3.850</b>.<div class="text-muted-s">Ayer</div></div></div>
+        <div class="d-flex gap-3"><span class="ico"><i class="bi bi-chat-dots-fill"></i></span><div class="small"><b>Freddy Choque</b> comentó en el grupo del aceite.<div class="text-muted-s">Ayer</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="h4 mb-3">Proveedores destacados en La Paz</h3>
+  <div class="row g-3">
+    <div class="col-md-4"><div class="panel flat d-flex gap-3 align-items-center"><div class="avatar av1" style="width:52px;height:52px;border-radius:16px">DA</div><div><div class="fw-bold">Distribuidora Andina S.R.L.</div><div class="small"><span class="stars">★★★★★</span> 4,8 (126)</div><small class="text-muted-s">Abarrotes y aceites. Entrega en 3 días</small></div></div></div>
+    <div class="col-md-4"><div class="panel flat d-flex gap-3 align-items-center"><div class="avatar av2" style="width:52px;height:52px;border-radius:16px">MS</div><div><div class="fw-bold">Mayorista El Sol</div><div class="small"><span class="stars">★★★★☆</span> 4,6 (89)</div><small class="text-muted-s">Limpieza y bebidas. Entrega en 2 días</small></div></div></div>
+    <div class="col-md-4"><div class="panel flat d-flex gap-3 align-items-center"><div class="avatar av3" style="width:52px;height:52px;border-radius:16px">IT</div><div><div class="fw-bold">Importadora Titicaca</div><div class="small"><span class="stars">★★★★☆</span> 4,3 (54)</div><small class="text-muted-s">Importados a precio de volumen</small></div></div></div>
+  </div>
+</section>
+
+<!-- ===== COMERCIANTE: EXPLORAR ===== -->
+<section id="c-explore" class="page" data-title="Explorar">
+  <div class="row g-3 align-items-center mb-3">
+    <div class="col-lg-7">
+      <div class="input-group input-group-lg">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input class="form-control" placeholder="Busca aceite, arroz, detergente..." value="aceite">
+      </div>
+    </div>
+    <div class="col-lg-5 d-flex gap-2">
+      <select class="form-select" aria-label="Ciudad"><option>La Paz</option><option>El Alto</option></select>
+      <select class="form-select" aria-label="Ordenar"><option>Más relevante</option><option>Menor precio</option><option>Mejor calificado</option></select>
+    </div>
+  </div>
+  <div class="chips mb-4">
+    <button class="chip active">Todo</button><button class="chip">Abarrotes</button><button class="chip">Limpieza</button><button class="chip">Bebidas</button><button class="chip">Ferretería</button><button class="chip">Papelería</button><button class="chip">Con precio por volumen</button><button class="chip">Con grupo abierto</button>
+  </div>
+  <div class="d-flex justify-content-between align-items-center mb-3"><h3 class="h5 mb-0">6 productos encontrados</h3><small class="text-muted-s">Precios por caja, en bolivianos</small></div>
+  <div class="row g-3">
+    <div class="col-sm-6 col-xl-4"><div class="panel h-100 d-flex flex-column">
+      <div class="d-flex gap-3 mb-3"><div class="tile lg t2">🛢️</div><div><div class="fw-bold">Aceite Fino 900 ml</div><small class="text-muted-s">Caja x12 · Distribuidora Andina</small><div class="small mt-1"><span class="stars">★</span> 4,8</div></div></div>
+      <table class="table table-sm mb-3 small"><tbody><tr><td>1 a 49 cajas</td><td class="text-end fw-bold">Bs 80</td></tr><tr><td>50 a 99 cajas</td><td class="text-end fw-bold">Bs 74</td></tr><tr class="table-active"><td>100 o más</td><td class="text-end fw-bold text-o">Bs 68</td></tr></tbody></table>
+      <span class="badge-s b-ok mb-3 align-self-start"><i class="bi bi-people-fill"></i> 1 grupo abierto: 100 de 100</span>
+      <div class="d-flex gap-2 mt-auto"><button class="btn btn-o-line btn-sm flex-fill" onclick="toast('Agregado al carrito: 1 caja de aceite')">Comprar</button><button class="btn btn-o btn-sm flex-fill" onclick="go('c-group')">Ver grupo</button></div>
+    </div></div>
+    <div class="col-sm-6 col-xl-4"><div class="panel h-100 d-flex flex-column">
+      <div class="d-flex gap-3 mb-3"><div class="tile lg t1">🍚</div><div><div class="fw-bold">Arroz Grano de Oro</div><small class="text-muted-s">Bolsa 50 kg · Mayorista El Sol</small><div class="small mt-1"><span class="stars">★</span> 4,6</div></div></div>
+      <table class="table table-sm mb-3 small"><tbody><tr><td>1 a 49 bolsas</td><td class="text-end fw-bold">Bs 305</td></tr><tr><td>50 a 99 bolsas</td><td class="text-end fw-bold">Bs 292</td></tr><tr class="table-active"><td>100 o más</td><td class="text-end fw-bold text-o">Bs 279</td></tr></tbody></table>
+      <span class="badge-s b-warn mb-3 align-self-start"><i class="bi bi-people-fill"></i> 1 grupo abierto: 62 de 100</span>
+      <div class="d-flex gap-2 mt-auto"><button class="btn btn-o-line btn-sm flex-fill" onclick="toast('Agregado al carrito: 1 bolsa de arroz')">Comprar</button><button class="btn btn-o btn-sm flex-fill" onclick="go('c-group')">Unirme</button></div>
+    </div></div>
+    <div class="col-sm-6 col-xl-4"><div class="panel h-100 d-flex flex-column">
+      <div class="d-flex gap-3 mb-3"><div class="tile lg t6">🍬</div><div><div class="fw-bold">Azúcar Guabirá</div><small class="text-muted-s">Quintal 50 kg · Distribuidora Andina</small><div class="small mt-1"><span class="stars">★</span> 4,8</div></div></div>
+      <table class="table table-sm mb-3 small"><tbody><tr><td>1 a 49 quintales</td><td class="text-end fw-bold">Bs 410</td></tr><tr><td>50 a 99 quintales</td><td class="text-end fw-bold">Bs 395</td></tr><tr class="table-active"><td>100 o más</td><td class="text-end fw-bold text-o">Bs 385</td></tr></tbody></table>
+      <span class="badge-s b-tint mb-3 align-self-start"><i class="bi bi-plus-circle-fill"></i> Sin grupo abierto todavía</span>
+      <div class="d-flex gap-2 mt-auto"><button class="btn btn-o-line btn-sm flex-fill" onclick="toast('Agregado al carrito: 1 quintal de azúcar')">Comprar</button><button class="btn btn-o btn-sm flex-fill" onclick="toast('Se abre el formulario para crear un grupo')">Crear grupo</button></div>
+    </div></div>
+    <div class="col-sm-6 col-xl-4"><div class="panel h-100 d-flex flex-column">
+      <div class="d-flex gap-3 mb-3"><div class="tile lg t3">🧴</div><div><div class="fw-bold">Detergente Ola 1 kg</div><small class="text-muted-s">Caja x20 · Mayorista El Sol</small><div class="small mt-1"><span class="stars">★</span> 4,6</div></div></div>
+      <table class="table table-sm mb-3 small"><tbody><tr><td>1 a 29 cajas</td><td class="text-end fw-bold">Bs 190</td></tr><tr><td>30 a 59 cajas</td><td class="text-end fw-bold">Bs 178</td></tr><tr class="table-active"><td>60 o más</td><td class="text-end fw-bold text-o">Bs 169</td></tr></tbody></table>
+      <span class="badge-s b-warn mb-3 align-self-start"><i class="bi bi-people-fill"></i> 1 grupo abierto: 38 de 60</span>
+      <div class="d-flex gap-2 mt-auto"><button class="btn btn-o-line btn-sm flex-fill" onclick="toast('Agregado al carrito: 1 caja de detergente')">Comprar</button><button class="btn btn-o btn-sm flex-fill" onclick="go('c-group')">Unirme</button></div>
+    </div></div>
+    <div class="col-sm-6 col-xl-4"><div class="panel h-100 d-flex flex-column">
+      <div class="d-flex gap-3 mb-3"><div class="tile lg t5">🥫</div><div><div class="fw-bold">Atún Sardimar en aceite</div><small class="text-muted-s">Caja x48 · Importadora Titicaca</small><div class="small mt-1"><span class="stars">★</span> 4,3</div></div></div>
+      <table class="table table-sm mb-3 small"><tbody><tr><td>1 a 24 cajas</td><td class="text-end fw-bold">Bs 336</td></tr><tr><td>25 a 49 cajas</td><td class="text-end fw-bold">Bs 318</td></tr><tr class="table-active"><td>50 o más</td><td class="text-end fw-bold text-o">Bs 299</td></tr></tbody></table>
+      <span class="badge-s b-tint mb-3 align-self-start"><i class="bi bi-people-fill"></i> 1 grupo abierto: 21 de 50</span>
+      <div class="d-flex gap-2 mt-auto"><button class="btn btn-o-line btn-sm flex-fill" onclick="toast('Agregado al carrito: 1 caja de atún')">Comprar</button><button class="btn btn-o btn-sm flex-fill" onclick="go('c-group')">Unirme</button></div>
+    </div></div>
+    <div class="col-sm-6 col-xl-4"><div class="panel h-100 d-flex flex-column">
+      <div class="d-flex gap-3 mb-3"><div class="tile lg t4">🥤</div><div><div class="fw-bold">Refresco Cielo 2 litros</div><small class="text-muted-s">Paquete x8 · Mayorista El Sol</small><div class="small mt-1"><span class="stars">★</span> 4,6</div></div></div>
+      <table class="table table-sm mb-3 small"><tbody><tr><td>1 a 39 paquetes</td><td class="text-end fw-bold">Bs 74</td></tr><tr><td>40 a 79 paquetes</td><td class="text-end fw-bold">Bs 69</td></tr><tr class="table-active"><td>80 o más</td><td class="text-end fw-bold text-o">Bs 64</td></tr></tbody></table>
+      <span class="badge-s b-tint mb-3 align-self-start"><i class="bi bi-plus-circle-fill"></i> Sin grupo abierto todavía</span>
+      <div class="d-flex gap-2 mt-auto"><button class="btn btn-o-line btn-sm flex-fill" onclick="toast('Agregado al carrito: 1 paquete de refresco')">Comprar</button><button class="btn btn-o btn-sm flex-fill" onclick="toast('Se abre el formulario para crear un grupo')">Crear grupo</button></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ===== COMERCIANTE: GRUPO ===== -->
+<section id="c-group" class="page" data-title="Detalle del grupo">
+  <div class="panel flat mb-4">
+    <div class="row g-3 align-items-center">
+      <div class="col-lg-8">
+        <div class="d-flex gap-3">
+          <div class="tile lg t2">🛢️</div>
+          <div>
+            <div class="mb-2 d-flex flex-wrap gap-2"><span class="badge-s b-o"><i class="bi bi-hand-thumbs-up-fill"></i> En votación</span><span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Rodríguez, La Paz</span><span class="badge-s b-tint"><i class="bi bi-truck"></i> Entrega coordinada</span></div>
+            <h2 class="h3 mb-1">Aceite Fino 900 ml, caja x12</h2>
+            <div class="text-muted-s small">Organiza Carmen Quispe. Creado el 22 de septiembre. Precio normal: Bs 80 por caja.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="d-flex justify-content-between small mb-1"><b>100 de 100 cajas</b><span class="text-ok fw-bold" style="color:var(--ok)">Meta alcanzada</span></div>
+        <div class="progress done mb-2"><div class="progress-bar" style="width:100%"></div></div>
+        <div class="small text-muted-s"><i class="bi bi-clock-history"></i> La votación cierra el 30 de sep a las 18:00</div>
+      </div>
+    </div>
+  </div>
+
+  <ul class="nav nav-pills nav-pills-s mb-4" role="tablist">
+    <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#g-ofertas" type="button">Ofertas <span class="badge-s b-ink ms-1" style="padding:.1rem .5rem">3</span></button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#g-part" type="button">Participantes</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#g-coment" type="button">Comentarios</button></li>
+    <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#g-seg" type="button">Seguimiento</button></li>
+  </ul>
+
+  <div class="tab-content">
+    <!-- OFERTAS -->
+    <div class="tab-pane fade show active" id="g-ofertas">
+      <div class="row g-3 mb-4">
+        <div class="col-lg-4">
+          <div class="offer" data-price="70" id="of-a">
+            <div class="d-flex justify-content-between align-items-start mb-3"><div class="d-flex gap-2 align-items-center"><div class="avatar av1" style="border-radius:12px">DA</div><div class="lh-sm"><div class="fw-bold">Distribuidora Andina</div><small><span class="stars">★★★★★</span> 4,8</small></div></div><span class="badge-s b-o">Elegida por 3 votos</span></div>
+            <div class="mb-3"><span class="price money">Bs 70</span> <small class="text-muted-s">por caja</small><div class="small" style="color:var(--ok)"><b>Ahorras 12,5%</b> frente al precio normal</div></div>
+            <ul class="mb-3"><li><span class="text-muted-s">Total del grupo</span><b>Bs 7.000</b></li><li><span class="text-muted-s">Entrega</span><b>3 días</b></li><li><span class="text-muted-s">Pago</span><b>Contra confirmación</b></li><li><span class="text-muted-s">Vale hasta</span><b>1 de octubre</b></li></ul>
+            <div class="your-cost mb-3"><small>Tu costo: 20 cajas</small><div class="money fs-4" data-your>Bs 1.400</div></div>
+            <button class="btn btn-o mt-auto vote-btn" onclick="pick('of-a')"><i class="bi bi-check2-circle"></i> Votaste por esta oferta</button>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="offer" data-price="72" id="of-b">
+            <div class="d-flex justify-content-between align-items-start mb-3"><div class="d-flex gap-2 align-items-center"><div class="avatar av2" style="border-radius:12px">MS</div><div class="lh-sm"><div class="fw-bold">Mayorista El Sol</div><small><span class="stars">★★★★☆</span> 4,6</small></div></div><span class="badge-s b-tint">Entrega más rápida</span></div>
+            <div class="mb-3"><span class="price money">Bs 72</span> <small class="text-muted-s">por caja</small><div class="small" style="color:var(--ok)"><b>Ahorras 10%</b> frente al precio normal</div></div>
+            <ul class="mb-3"><li><span class="text-muted-s">Total del grupo</span><b>Bs 7.200</b></li><li><span class="text-muted-s">Entrega</span><b>2 días</b></li><li><span class="text-muted-s">Pago</span><b>Contra entrega</b></li><li><span class="text-muted-s">Vale hasta</span><b>30 de septiembre</b></li></ul>
+            <div class="your-cost mb-3"><small>Tu costo: 20 cajas</small><div class="money fs-4" data-your>Bs 1.440</div></div>
+            <button class="btn btn-o-line mt-auto vote-btn" onclick="pick('of-b')">Votar por esta oferta</button>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="offer" data-price="68" id="of-c">
+            <div class="d-flex justify-content-between align-items-start mb-3"><div class="d-flex gap-2 align-items-center"><div class="avatar av3" style="border-radius:12px">IT</div><div class="lh-sm"><div class="fw-bold">Importadora Titicaca</div><small><span class="stars">★★★★☆</span> 4,3</small></div></div><span class="badge-s b-warn">Precio más bajo</span></div>
+            <div class="mb-3"><span class="price money">Bs 68</span> <small class="text-muted-s">por caja</small><div class="small" style="color:var(--ok)"><b>Ahorras 15%</b> frente al precio normal</div></div>
+            <ul class="mb-3"><li><span class="text-muted-s">Total del grupo</span><b>Bs 6.800</b></li><li><span class="text-muted-s">Entrega</span><b>7 días</b></li><li><span class="text-muted-s">Pago</span><b>50% adelantado</b></li><li><span class="text-muted-s">Vale hasta</span><b>2 de octubre</b></li></ul>
+            <div class="your-cost mb-3"><small>Tu costo: 20 cajas</small><div class="money fs-4" data-your>Bs 1.360</div></div>
+            <button class="btn btn-o-line mt-auto vote-btn" onclick="pick('of-c')">Votar por esta oferta</button>
+          </div>
+        </div>
+      </div>
+      <div class="summary-bar d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div><div class="small opacity-75">Si gana esta oferta, pagas solo tu pedido</div><div class="money fs-4" id="sum-line">20 cajas x Bs 70 = Bs 1.400</div></div>
+        <div class="d-flex gap-2"><button class="btn btn-white" onclick="toast('Se abre la comparación lado a lado')"><i class="bi bi-columns-gap"></i> Comparar</button><button class="btn btn-o" onclick="toast('Tu voto quedó registrado')">Confirmar mi voto</button></div>
+      </div>
+      <div class="row g-3 mt-2">
+        <div class="col-md-4"><div class="panel-tint h-100"><div class="small text-muted-s">Votos hasta ahora</div><div class="d-flex gap-2 align-items-end mt-2"><div class="flex-fill"><div class="money fs-3">3</div><small>Andina</small></div><div class="flex-fill"><div class="money fs-3">1</div><small>El Sol</small></div><div class="flex-fill"><div class="money fs-3">1</div><small>Titicaca</small></div></div></div></div>
+        <div class="col-md-8"><div class="panel-tint h-100 d-flex gap-3 align-items-center"><span class="ico" style="background:#fff"><i class="bi bi-info-circle-fill"></i></span><div class="small">Cada participante confirma su propia compra. Quien no confirme antes del cierre sale del grupo y el total se recalcula. El pago se hace directo al proveedor, fuera de Summa.</div></div></div>
+      </div>
+    </div>
+
+    <!-- PARTICIPANTES -->
+    <div class="tab-pane fade" id="g-part">
+      <div class="panel">
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-center gap-3"><div class="avatar av1">CQ</div><div class="flex-grow-1"><div class="fw-bold">Carmen Quispe <span class="badge-s b-o ms-1">Organiza</span></div><small class="text-muted-s">Abarrotes Los Andes, Rodríguez</small><div class="progress mt-2" style="height:8px"><div class="progress-bar" style="width:20%"></div></div></div><div class="text-end"><div class="money fs-5">20 cajas</div><small class="text-muted-s">Bs 1.400</small></div></div>
+          <div class="d-flex align-items-center gap-3"><div class="avatar av2">JM</div><div class="flex-grow-1"><div class="fw-bold">Julián Mamani</div><small class="text-muted-s">Minimarket Mamani, Gran Poder</small><div class="progress mt-2" style="height:8px"><div class="progress-bar" style="width:30%"></div></div></div><div class="text-end"><div class="money fs-5">30 cajas</div><small class="text-muted-s">Bs 2.100</small></div></div>
+          <div class="d-flex align-items-center gap-3"><div class="avatar av3">RC</div><div class="flex-grow-1"><div class="fw-bold">Rosa Condori</div><small class="text-muted-s">Tienda Doña Rosa, Villa Fátima</small><div class="progress mt-2" style="height:8px"><div class="progress-bar" style="width:25%"></div></div></div><div class="text-end"><div class="money fs-5">25 cajas</div><small class="text-muted-s">Bs 1.750</small></div></div>
+          <div class="d-flex align-items-center gap-3"><div class="avatar av4">FC</div><div class="flex-grow-1"><div class="fw-bold">Freddy Choque</div><small class="text-muted-s">Abarrotes Choque, El Alto</small><div class="progress mt-2" style="height:8px"><div class="progress-bar" style="width:15%"></div></div></div><div class="text-end"><div class="money fs-5">15 cajas</div><small class="text-muted-s">Bs 1.050</small></div></div>
+          <div class="d-flex align-items-center gap-3"><div class="avatar av5">EA</div><div class="flex-grow-1"><div class="fw-bold">Elena Apaza</div><small class="text-muted-s">Kiosco La Esperanza, Sopocachi</small><div class="progress mt-2" style="height:8px"><div class="progress-bar" style="width:10%"></div></div></div><div class="text-end"><div class="money fs-5">10 cajas</div><small class="text-muted-s">Bs 700</small></div></div>
+        </div>
+        <div class="divider-dash mt-4 pt-3 d-flex justify-content-between"><b>Total del grupo</b><span class="money fs-5" style="color:var(--o-deep)">100 cajas</span></div>
+        <div class="small text-muted-s mt-1">Los montos usan la oferta de Bs 70 por caja como referencia.</div>
+      </div>
+    </div>
+
+    <!-- COMENTARIOS -->
+    <div class="tab-pane fade" id="g-coment">
+      <div class="panel">
+        <div class="d-flex flex-column gap-3 mb-4">
+          <div class="d-flex gap-2"><div class="avatar av2" style="width:36px;height:36px;font-size:.8rem">JM</div><div><small class="fw-bold">Julián Mamani</small> <small class="text-muted-s">hace 5 h</small><div class="bubble">¿Titicaca entrega en El Alto sin costo? Con 7 días me atraso para el feriado.</div></div></div>
+          <div class="d-flex gap-2"><div class="avatar av3" style="width:36px;height:36px;font-size:.8rem">IT</div><div><small class="fw-bold">Importadora Titicaca</small> <span class="badge-s b-tint" style="padding:.1rem .5rem">Proveedor</span> <small class="text-muted-s">hace 4 h</small><div class="bubble">Sí, la entrega en La Paz y El Alto va incluida. El plazo de 7 días es por el desaduanaje.</div></div></div>
+          <div class="d-flex gap-2"><div class="avatar av4" style="width:36px;height:36px;font-size:.8rem">FC</div><div><small class="fw-bold">Freddy Choque</small> <small class="text-muted-s">hace 3 h</small><div class="bubble">Yo voto por Andina. Son 2 puntos más caros que Titicaca, pero llega antes y no hay que adelantar plata.</div></div></div>
+          <div class="d-flex gap-2 justify-content-end"><div class="text-end"><small class="fw-bold">Tú</small> <small class="text-muted-s">hace 1 h</small><div><div class="bubble me text-start">Estoy de acuerdo. Mañana a las 18:00 cierra la votación, no se olviden de confirmar su compra.</div></div></div></div>
+        </div>
+        <div class="input-group"><input class="form-control" placeholder="Escribe un comentario para el grupo" aria-label="Comentario"><button class="btn btn-o" onclick="toast('Comentario publicado')"><i class="bi bi-send-fill"></i></button></div>
+      </div>
+    </div>
+
+    <!-- SEGUIMIENTO -->
+    <div class="tab-pane fade" id="g-seg">
+      <div class="panel">
+        <ul class="vt">
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Grupo abierto</b><div class="small text-muted-s">22 de septiembre. Carmen creó el grupo con 20 cajas.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Meta alcanzada</b><div class="small text-muted-s">26 de septiembre. 5 comerciantes reunieron 100 cajas.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Negociación</b><div class="small text-muted-s">27 al 29 de septiembre. Se recibieron 3 ofertas.</div></li>
+          <li class="now"><span class="pt"><i class="bi bi-hand-thumbs-up-fill"></i></span><b>Votación</b><div class="small text-muted-s">En curso. Cierra el 30 de septiembre a las 18:00. Votaron 5 de 5.</div></li>
+          <li><span class="pt"><i class="bi bi-dot"></i></span><b>Confirmada</b><div class="small text-muted-s">Cada participante confirma su compra.</div></li>
+          <li><span class="pt"><i class="bi bi-dot"></i></span><b>Pagada, en preparación y entregada</b><div class="small text-muted-s">Cada uno paga su pedido al proveedor y recibe su mercadería.</div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMERCIANTE: PEDIDOS ===== -->
+<section id="c-orders" class="page" data-title="Mis pedidos">
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <div class="panel flat mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+          <div class="d-flex gap-3"><div class="tile t6">🍬</div><div><div class="mb-1"><span class="badge-s b-o">En preparación</span> <span class="badge-s b-tint">Compra en grupo</span></div><h2 class="h4 mb-0">Pedido SM-2041</h2><small class="text-muted-s">Azúcar Guabirá, quintal 50 kg. Distribuidora Andina</small></div></div>
+          <div class="text-end"><div class="money fs-3" style="color:var(--o-deep)">Bs 3.850</div><small class="text-muted-s">10 quintales x Bs 385</small></div>
+        </div>
+        <div class="stepper mb-4">
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Solicitud</div>
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Negociación</div>
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Confirmada</div>
+          <div class="step done"><div class="dot"><i class="bi bi-check-lg"></i></div>Pagada</div>
+          <div class="step current"><div class="dot"><i class="bi bi-box-seam"></i></div>En preparación</div>
+          <div class="step"><div class="dot"><i class="bi bi-house-check"></i></div>Entregada</div>
+        </div>
+        <div class="row g-3">
+          <div class="col-sm-6"><div class="panel-tint h-100"><div class="small text-muted-s mb-1">Entrega estimada</div><div class="fw-bold">Viernes 2 de octubre</div><div class="small">Av. Buenos Aires 1234, Rodríguez</div></div></div>
+          <div class="col-sm-6"><div class="panel-tint h-100"><div class="small text-muted-s mb-1">Pago</div><div class="fw-bold" style="color:var(--ok)"><i class="bi bi-check-circle-fill"></i> Confirmado el 28 de sep</div><div class="small">Transferencia. Comprobante enviado</div></div></div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mt-4">
+          <button class="btn btn-o" onclick="toast('Se abre el detalle para confirmar la recepción')"><i class="bi bi-house-check"></i> Confirmar recepción</button>
+          <button class="btn btn-o-line" onclick="toast('Se abre el chat con el proveedor')"><i class="bi bi-chat-dots"></i> Escribir al proveedor</button>
+        </div>
+      </div>
+      <div class="panel">
+        <h3 class="h5 mb-3">Historial de estados</h3>
+        <ul class="vt">
+          <li class="now"><span class="pt"><i class="bi bi-box-seam"></i></span><b>En preparación</b><div class="small text-muted-s">29 sep, 09:40. Distribuidora Andina arma el despacho del grupo.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Pagada</b><div class="small text-muted-s">28 sep, 16:10. El proveedor confirmó tu pago de Bs 3.850.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Confirmada</b><div class="small text-muted-s">27 sep, 18:00. Ganó la oferta de Bs 385 por quintal.</div></li>
+          <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Negociación y solicitud</b><div class="small text-muted-s">20 al 27 sep. Grupo de 5 comerciantes, 100 quintales.</div></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <h3 class="h5 mb-3">Otros pedidos</h3>
+      <div class="d-flex flex-column gap-3">
+        <div class="panel"><div class="d-flex gap-3 align-items-center"><div class="tile t3" style="width:52px;height:52px;font-size:1.6rem">🧴</div><div class="flex-grow-1"><div class="fw-bold">Detergente Ola 1 kg</div><small class="text-muted-s">Compra individual. 2 cajas</small></div><div class="text-end"><div class="money">Bs 380</div><span class="badge-s b-warn">Solicitado</span></div></div></div>
+        <div class="panel"><div class="d-flex gap-3 align-items-center"><div class="tile t4" style="width:52px;height:52px;font-size:1.6rem">🥤</div><div class="flex-grow-1"><div class="fw-bold">Refresco Cielo 2 litros</div><small class="text-muted-s">Compra en grupo. 40 paquetes</small></div><div class="text-end"><div class="money">Bs 2.760</div><span class="badge-s b-tint">Confirmada</span></div></div><div class="mt-3 your-cost small">Falta pagar a Mayorista El Sol antes del 1 de octubre.<div class="mt-2"><button class="btn btn-o btn-sm" onclick="toast('Marcaste el pedido como pagado. Falta la confirmación del proveedor')">Ya pagué</button></div></div></div>
+        <div class="panel"><div class="d-flex gap-3 align-items-center"><div class="tile t2" style="width:52px;height:52px;font-size:1.6rem">🍝</div><div class="flex-grow-1"><div class="fw-bold">Fideo Lucchetti</div><small class="text-muted-s">Compra en grupo. 30 cajas</small></div><div class="text-end"><div class="money">Bs 2.190</div><span class="badge-s b-ok">Entregado</span></div></div><div class="mt-3 d-flex justify-content-between align-items-center"><span class="stars fs-5">★★★★★</span><button class="btn btn-o-line btn-sm" onclick="toast('Gracias por calificar a Distribuidora Andina')">Calificar proveedor</button></div></div>
+      </div>
+      <div class="panel-tint mt-4"><div class="small text-muted-s">Ahorro total en pedidos de grupo</div><div class="money fs-2" style="color:var(--o-deep)">Bs 1.240</div><small>Frente al precio que hubieras pagado comprando sola.</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROVEEDOR: PANEL ===== -->
+<section id="p-home" class="page" data-title="Panel del proveedor">
+  <div class="hero-c mb-4">
+    <div class="row align-items-center g-3 position-relative" style="z-index:1">
+      <div class="col-lg-8">
+        <h2 class="display-f mb-1" style="font-size:clamp(1.6rem,3.2vw,2.3rem);font-weight:800;letter-spacing:-.035em">Distribuidora Andina tiene 5 grupos esperando una oferta.</h2>
+        <p class="mb-3 opacity-90">Cada grupo ya reunió su volumen. Solo falta tu precio.</p>
+        <button class="btn btn-white" onclick="go('p-offer')">Ver oportunidades</button>
+      </div>
+      <div class="col-lg-4"><div class="bg-white text-dark rounded-4 p-3"><div class="small text-muted-s">Ventas de septiembre</div><div class="money" style="font-size:2.3rem;color:var(--o-deep)">Bs 48.300</div><div class="small" style="color:var(--ok)"><b>+22%</b> frente a agosto</div></div></div>
+    </div>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3"><div class="stat"><span class="ico mb-2"><i class="bi bi-bullseye"></i></span><div class="n">5</div><small class="text-muted-s">oportunidades nuevas</small></div></div>
+    <div class="col-6 col-md-3"><div class="stat"><span class="ico mb-2"><i class="bi bi-send-fill"></i></span><div class="n">2</div><small class="text-muted-s">ofertas pendientes</small></div></div>
+    <div class="col-6 col-md-3"><div class="stat"><span class="ico mb-2"><i class="bi bi-box-seam-fill"></i></span><div class="n">3</div><small class="text-muted-s">pedidos por preparar</small></div></div>
+    <div class="col-6 col-md-3"><div class="stat solid"><span class="ico mb-2" style="background:rgba(255,255,255,.12);color:var(--o-sun)"><i class="bi bi-patch-check-fill"></i></span><div class="n">96%</div><small class="opacity-75">cumplimiento de entregas</small></div></div>
+  </div>
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <h3 class="h4 mb-3">Grupos que buscan tus productos</h3>
+      <div class="panel p-0 overflow-hidden">
+        <div class="table-responsive">
+          <table class="table mb-0">
+            <thead><tr><th class="ps-3">Producto</th><th>Volumen</th><th>Zona</th><th>Cierra</th><th></th></tr></thead>
+            <tbody>
+              <tr><td class="ps-3"><b>Aceite Fino 900 ml</b><div class="small text-muted-s">5 comerciantes</div></td><td>100 cajas</td><td>La Paz</td><td><span class="badge-s b-o">Mañana</span></td><td><button class="btn btn-o btn-sm" onclick="go('p-offer')">Ofertar</button></td></tr>
+              <tr><td class="ps-3"><b>Arroz Grano de Oro</b><div class="small text-muted-s">9 comerciantes</div></td><td>62 bolsas</td><td>Rodríguez</td><td><span class="badge-s b-tint">2 días</span></td><td><button class="btn btn-o-line btn-sm" onclick="go('p-offer')">Ofertar</button></td></tr>
+              <tr><td class="ps-3"><b>Azúcar Guabirá</b><div class="small text-muted-s">7 comerciantes</div></td><td>140 quintales</td><td>El Alto</td><td><span class="badge-s b-tint">4 días</span></td><td><button class="btn btn-o-line btn-sm" onclick="go('p-offer')">Ofertar</button></td></tr>
+              <tr><td class="ps-3"><b>Atún Sardimar</b><div class="small text-muted-s">4 comerciantes</div></td><td>21 cajas</td><td>Villa Fátima</td><td><span class="badge-s b-tint">9 días</span></td><td><button class="btn btn-o-line btn-sm" onclick="go('p-offer')">Ofertar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5">
+      <h3 class="h4 mb-3">Ventas por semana</h3>
+      <div class="panel mb-4">
+        <div class="bars mb-4 mt-3" role="img" aria-label="Ventas por semana: 8,4; 11,2; 9,6 y 19,1 miles de bolivianos">
+          <div class="bar" style="height:44%"><em>8,4 mil</em><span>Sem 1</span></div>
+          <div class="bar" style="height:59%"><em>11,2 mil</em><span>Sem 2</span></div>
+          <div class="bar" style="height:50%"><em>9,6 mil</em><span>Sem 3</span></div>
+          <div class="bar hi" style="height:100%"><em>19,1 mil</em><span>Sem 4</span></div>
+        </div>
+      </div>
+      <h3 class="h5 mb-3">Pagos por confirmar</h3>
+      <div class="panel">
+        <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom" style="border-color:var(--o-tint)!important"><div class="avatar av3">RC</div><div class="flex-grow-1 lh-sm"><b>Rosa Condori</b><div class="small text-muted-s">Azúcar, 30 quintales</div></div><div class="text-end"><div class="money">Bs 11.550</div><button class="btn btn-o btn-sm mt-1" onclick="toast('Pago de Rosa Condori confirmado')">Confirmar</button></div></div>
+        <div class="d-flex align-items-center gap-3"><div class="avatar av5">EA</div><div class="flex-grow-1 lh-sm"><b>Elena Apaza</b><div class="small text-muted-s">Azúcar, 15 quintales</div></div><div class="text-end"><div class="money">Bs 5.775</div><span class="badge-s b-warn mt-1">Sin comprobante</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROVEEDOR: OFERTA ===== -->
+<section id="p-offer" class="page" data-title="Enviar oferta">
+  <div class="row g-4">
+    <div class="col-lg-5">
+      <div class="panel flat mb-3">
+        <div class="d-flex gap-3 mb-3"><div class="tile lg t2">🛢️</div><div><span class="badge-s b-o mb-2">Cierra mañana</span><h2 class="h4 mb-1">Aceite Fino 900 ml, caja x12</h2><small class="text-muted-s">Grupo organizado por Carmen Quispe</small></div></div>
+        <div class="row g-2 text-center">
+          <div class="col-4"><div class="panel-tint p-2"><div class="money fs-4">100</div><small>cajas</small></div></div>
+          <div class="col-4"><div class="panel-tint p-2"><div class="money fs-4">5</div><small>comerciantes</small></div></div>
+          <div class="col-4"><div class="panel-tint p-2"><div class="money fs-4">Bs 80</div><small>precio normal</small></div></div>
+        </div>
+        <div class="divider-dash my-3"></div>
+        <div class="small"><div class="mb-1"><i class="bi bi-geo-alt-fill text-o"></i> Entrega en Rodríguez, Gran Poder, Villa Fátima, El Alto y Sopocachi</div><div class="mb-1"><i class="bi bi-chat-quote-fill text-o"></i> Condición del grupo: marca conocida y entrega antes del feriado</div><div><i class="bi bi-people-fill text-o"></i> Ya hay 2 ofertas de otros proveedores</div></div>
+      </div>
+      <div class="panel-tint"><b>Resultado para tu oferta</b>
+        <div class="d-flex justify-content-between mt-2"><span>Total del pedido</span><span class="money fs-4" id="pv-total">Bs 7.000</span></div>
+        <div class="d-flex justify-content-between"><span>Ahorro para el grupo</span><span class="money fs-5" style="color:var(--ok)" id="pv-save">Bs 1.000 (12,5%)</span></div>
+        <div class="small text-muted-s mt-2">Los comerciantes verán el ahorro contra el precio normal y su costo individual.</div>
+      </div>
+    </div>
+    <div class="col-lg-7">
+      <div class="panel flat">
+        <h3 class="h4 mb-3">Tu oferta al grupo</h3>
+        <div class="row g-3">
+          <div class="col-sm-6"><label class="form-label" for="f-price">Precio por caja</label><div class="input-group"><span class="input-group-text">Bs</span><input id="f-price" type="number" class="form-control" value="70" min="1" oninput="calcOffer()"></div></div>
+          <div class="col-sm-6"><label class="form-label" for="f-qty">Cajas que puedes cubrir</label><input id="f-qty" type="number" class="form-control" value="100" min="1" max="100" oninput="calcOffer()"></div>
+          <div class="col-sm-6"><label class="form-label" for="f-days">Tiempo de entrega</label><div class="input-group"><input id="f-days" type="number" class="form-control" value="3"><span class="input-group-text">días</span></div></div>
+          <div class="col-sm-6"><label class="form-label" for="f-valid">La oferta vale hasta</label><input id="f-valid" type="date" class="form-control" value="2026-10-01"></div>
+          <div class="col-sm-6"><label class="form-label" for="f-deliv">Forma de entrega</label><select id="f-deliv" class="form-select"><option>Entrega a domicilio sin costo</option><option>Entrega a domicilio con costo</option><option>Recojo en almacén</option></select></div>
+          <div class="col-sm-6"><label class="form-label" for="f-pay">Forma de pago</label><select id="f-pay" class="form-select"><option>Contra confirmación del pedido</option><option>Contra entrega</option><option>50% adelantado</option></select></div>
+          <div class="col-12"><label class="form-label" for="f-note">Condiciones y garantía</label><textarea id="f-note" class="form-control" rows="3">Cambio de cajas dañadas dentro de las 48 horas. Facturamos a cada comerciante por su pedido.</textarea></div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap mt-4">
+          <button class="btn btn-o px-4" onclick="toast('Oferta enviada a los 5 comerciantes del grupo')"><i class="bi bi-send-fill"></i> Enviar oferta</button>
+          <button class="btn btn-o-line" onclick="toast('Borrador guardado')">Guardar borrador</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROVEEDOR: PEDIDOS ===== -->
+<section id="p-orders" class="page" data-title="Pedidos del proveedor">
+  <div class="panel flat mb-4">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+      <div class="d-flex gap-3 align-items-center"><div class="tile t6">🍬</div><div><span class="badge-s b-o mb-1">En preparación</span><h2 class="h4 mb-0">Azúcar Guabirá, quintal 50 kg</h2><small class="text-muted-s">Grupo de 5 comerciantes a Bs 385 por quintal</small></div></div>
+      <div class="text-end"><div class="money fs-3" style="color:var(--o-deep)">Bs 38.500</div><small class="text-muted-s">100 quintales a despachar</small></div>
+    </div>
+    <div class="divider-dash my-3"></div>
+    <div class="d-flex flex-wrap gap-2">
+      <button class="btn btn-o" onclick="toast('El grupo pasó a En camino. Se avisó a los comerciantes')"><i class="bi bi-truck"></i> Marcar como enviado</button>
+      <button class="btn btn-o-line" onclick="toast('Se generó la hoja de despacho')"><i class="bi bi-printer"></i> Hoja de despacho</button>
+    </div>
+  </div>
+  <div class="panel p-0 overflow-hidden">
+    <div class="table-responsive">
+      <table class="table mb-0">
+        <thead><tr><th class="ps-3">Comerciante</th><th>Cantidad</th><th>Monto</th><th>Entrega</th><th>Pago</th></tr></thead>
+        <tbody>
+          <tr><td class="ps-3"><div class="d-flex align-items-center gap-2"><div class="avatar av1" style="width:36px;height:36px;font-size:.8rem">CQ</div><div class="lh-sm"><b>Carmen Quispe</b><div class="small text-muted-s">Rodríguez</div></div></div></td><td>10</td><td class="fw-bold">Bs 3.850</td><td>Vie 2 oct</td><td><span class="badge-s b-ok">Pagado</span></td></tr>
+          <tr><td class="ps-3"><div class="d-flex align-items-center gap-2"><div class="avatar av2" style="width:36px;height:36px;font-size:.8rem">JM</div><div class="lh-sm"><b>Julián Mamani</b><div class="small text-muted-s">Gran Poder</div></div></div></td><td>20</td><td class="fw-bold">Bs 7.700</td><td>Vie 2 oct</td><td><span class="badge-s b-ok">Pagado</span></td></tr>
+          <tr><td class="ps-3"><div class="d-flex align-items-center gap-2"><div class="avatar av3" style="width:36px;height:36px;font-size:.8rem">RC</div><div class="lh-sm"><b>Rosa Condori</b><div class="small text-muted-s">Villa Fátima</div></div></div></td><td>30</td><td class="fw-bold">Bs 11.550</td><td>Vie 2 oct</td><td><button class="btn btn-o btn-sm" onclick="toast('Pago de Rosa Condori confirmado')">Confirmar pago</button></td></tr>
+          <tr><td class="ps-3"><div class="d-flex align-items-center gap-2"><div class="avatar av4" style="width:36px;height:36px;font-size:.8rem">FC</div><div class="lh-sm"><b>Freddy Choque</b><div class="small text-muted-s">El Alto</div></div></div></td><td>25</td><td class="fw-bold">Bs 9.625</td><td>Sáb 3 oct</td><td><span class="badge-s b-ok">Pagado</span></td></tr>
+          <tr><td class="ps-3"><div class="d-flex align-items-center gap-2"><div class="avatar av5" style="width:36px;height:36px;font-size:.8rem">EA</div><div class="lh-sm"><b>Elena Apaza</b><div class="small text-muted-s">Sopocachi</div></div></div></td><td>15</td><td class="fw-bold">Bs 5.775</td><td>Vie 2 oct</td><td><span class="badge-s b-warn">Pendiente</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+      </div>
+    </main>
+  </div>
+
+  <nav class="bottom-nav d-lg-none" id="bottom-nav" aria-label="Navegación móvil"></nav>
+</div>
+
+<div class="toast-s" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const NAV={
+  c:[['c-home','bi-house-heart-fill','Inicio'],['c-explore','bi-search','Explorar'],['c-group','bi-people-fill','Grupos'],['c-orders','bi-box-seam-fill','Pedidos']],
+  p:[['p-home','bi-speedometer2','Panel'],['p-offer','bi-tag-fill','Ofertar'],['p-orders','bi-truck','Pedidos']]
+};
+const USER={c:{av:'CQ',name:'Carmen Quispe',biz:'Abarrotes Los Andes',cls:'av1'},p:{av:'DA',name:'Distribuidora Andina',biz:'Proveedor aprobado',cls:'av2'}};
+let role='c', current='c-home';
+
+function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.')}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600)}
+
+function buildNav(){
+  const side=document.getElementById('side-nav'), bot=document.getElementById('bottom-nav');
+  side.innerHTML=''; bot.innerHTML='';
+  NAV[role].forEach(([id,ic,label])=>{
+    side.insertAdjacentHTML('beforeend',`<button class="side-link" data-go="${id}" onclick="go('${id}')"><i class="bi ${ic}"></i>${label}</button>`);
+    bot.insertAdjacentHTML('beforeend',`<button data-go="${id}" onclick="go('${id}')"><i class="bi ${ic}"></i>${label}</button>`);
+  });
+  const u=USER[role];
+  const av=document.getElementById('su-av'); av.textContent=u.av; av.className='avatar '+u.cls;
+  document.getElementById('su-name').textContent=u.name;
+  document.getElementById('su-biz').textContent=u.biz;
+}
+function go(id){
+  current=id;
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+  document.querySelectorAll('[data-go]').forEach(b=>b.classList.toggle('active',b.dataset.go===id));
+  document.getElementById('page-title').textContent=document.getElementById(id).dataset.title;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function enter(r){
+  role=r;
+  document.getElementById('login').classList.add('d-none');
+  document.getElementById('app').classList.remove('d-none');
+  document.getElementById('rt-c').classList.toggle('active',r==='c');
+  document.getElementById('rt-p').classList.toggle('active',r==='p');
+  buildNav(); go(NAV[r][0][0]);
+}
+function logout(){
+  document.getElementById('app').classList.add('d-none');
+  document.getElementById('login').classList.remove('d-none');
+  window.scrollTo(0,0);
+}
+
+/* Votación de ofertas */
+function pick(id){
+  document.querySelectorAll('.offer').forEach(o=>{
+    const sel=o.id===id;
+    o.classList.toggle('selected',sel);
+    const b=o.querySelector('.vote-btn');
+    b.className='btn mt-auto vote-btn '+(sel?'btn-o':'btn-o-line');
+    b.innerHTML=sel?'<i class="bi bi-check2-circle"></i> Votaste por esta oferta':'Votar por esta oferta';
+  });
+  const price=+document.getElementById(id).dataset.price;
+  document.getElementById('sum-line').textContent=`20 cajas x Bs ${price} = Bs ${fmt(20*price)}`;
+}
+pick('of-a');
+
+/* Cálculo de oferta del proveedor */
+function calcOffer(){
+  const p=+document.getElementById('f-price').value||0, q=+document.getElementById('f-qty').value||0;
+  const total=p*q, save=(80-p)*q, pct=p>0?(((80-p)/80)*100):0;
+  document.getElementById('pv-total').textContent='Bs '+fmt(total);
+  const s=document.getElementById('pv-save');
+  s.textContent=save>=0?`Bs ${fmt(save)} (${pct.toFixed(1).replace('.',',')}%)`:'Tu precio supera el normal';
+  s.style.color=save>=0?'var(--ok)':'#C0392B';
+}
+</script>
+</body>
+</html>

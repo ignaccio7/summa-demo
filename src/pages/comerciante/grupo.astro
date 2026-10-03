@@ -1,0 +1,300 @@
+---
+// comerciante/grupo.astro – Detalle del Grupo con tabs (c-group)
+import AppLayout from '../../layouts/AppLayout.astro';
+---
+<AppLayout pageTitle="Detalle del grupo" role="comerciante">
+
+  <!-- Header del grupo -->
+  <div class="panel flat" style="margin-bottom:1.5rem;">
+    <div style="display:grid; grid-template-columns:1fr; gap:1rem; align-items:center;">
+      <div style="display:flex; gap:0.75rem;">
+        <div class="tile lg t2">🛢️</div>
+        <div>
+          <div style="margin-bottom:0.5rem; display:flex; flex-wrap:wrap; gap:0.4rem;">
+            <span class="badge-s b-o"><i class="bi bi-hand-thumbs-up-fill"></i> En votación</span>
+            <span class="badge-s b-tint"><i class="bi bi-geo-alt-fill"></i> Rodríguez, La Paz</span>
+            <span class="badge-s b-tint"><i class="bi bi-truck"></i> Entrega coordinada</span>
+          </div>
+          <h2 style="font-size:1.4rem; margin-bottom:0.25rem;">Aceite Fino 900 ml, caja x12</h2>
+          <div class="text-muted-s" style="font-size:0.88rem;">Organiza Carmen Quispe. Creado el 22 de septiembre. Precio normal: Bs 80 por caja.</div>
+        </div>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; font-size:0.88rem; margin-bottom:0.25rem;">
+          <b>100 de 100 cajas</b>
+          <span style="color:var(--color-ok); font-weight:700;">Meta alcanzada</span>
+        </div>
+        <div class="progress done" style="margin-bottom:0.5rem;"><div class="progress-bar" style="width:100%;"></div></div>
+        <div style="font-size:0.88rem;" class="text-muted-s"><i class="bi bi-clock-history"></i> La votación cierra el 30 de sep a las 18:00</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <ul class="nav-pills-s" id="group-tabs" style="margin-bottom:1.25rem;">
+    <li><button class="nav-link active" data-tab="g-ofertas">Ofertas <span class="badge-s b-ink" style="padding:.1rem .5rem;">3</span></button></li>
+    <li><button class="nav-link" data-tab="g-part">Participantes</button></li>
+    <li><button class="nav-link" data-tab="g-coment">Comentarios</button></li>
+    <li><button class="nav-link" data-tab="g-seg">Seguimiento</button></li>
+  </ul>
+
+  <!-- ── TAB: OFERTAS ── -->
+  <div class="tab-pane active" id="g-ofertas">
+    <div style="display:grid; grid-template-columns:1fr; gap:0.75rem; margin-bottom:1.25rem;">
+
+      <!-- Oferta A: Distribuidora Andina -->
+      <div class="offer selected" data-price="70" id="of-a">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <div class="avatar av1" style="border-radius:12px;">DA</div>
+            <div style="line-height:1.2;">
+              <div style="font-weight:700;">Distribuidora Andina</div>
+              <small><span class="stars">★★★★★</span> 4,8</small>
+            </div>
+          </div>
+          <span class="badge-s b-o">Elegida por 3 votos</span>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <span class="price money">Bs 70</span> <small class="text-muted-s">por caja</small>
+          <div style="font-size:0.88rem; color:var(--color-ok);"><b>Ahorras 12,5%</b> frente al precio normal</div>
+        </div>
+        <ul style="margin-bottom:0.75rem;">
+          <li><span class="text-muted-s">Total del grupo</span><b>Bs 7.000</b></li>
+          <li><span class="text-muted-s">Entrega</span><b>3 días</b></li>
+          <li><span class="text-muted-s">Pago</span><b>Contra confirmación</b></li>
+          <li><span class="text-muted-s">Vale hasta</span><b>1 de octubre</b></li>
+        </ul>
+        <div class="your-cost" style="margin-bottom:0.75rem;">
+          <small>Tu costo: 20 cajas</small>
+          <div class="money" style="font-size:1.4rem;" data-your>Bs 1.400</div>
+        </div>
+        <button class="btn btn-o vote-btn" style="margin-top:auto;" onclick="pick('of-a')">
+          <i class="bi bi-check2-circle"></i> Votaste por esta oferta
+        </button>
+      </div>
+
+      <!-- Oferta B: Mayorista El Sol -->
+      <div class="offer" data-price="72" id="of-b">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <div class="avatar av2" style="border-radius:12px;">MS</div>
+            <div style="line-height:1.2;">
+              <div style="font-weight:700;">Mayorista El Sol</div>
+              <small><span class="stars">★★★★☆</span> 4,6</small>
+            </div>
+          </div>
+          <span class="badge-s b-tint">Entrega más rápida</span>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <span class="price money">Bs 72</span> <small class="text-muted-s">por caja</small>
+          <div style="font-size:0.88rem; color:var(--color-ok);"><b>Ahorras 10%</b> frente al precio normal</div>
+        </div>
+        <ul style="margin-bottom:0.75rem;">
+          <li><span class="text-muted-s">Total del grupo</span><b>Bs 7.200</b></li>
+          <li><span class="text-muted-s">Entrega</span><b>2 días</b></li>
+          <li><span class="text-muted-s">Pago</span><b>Contra entrega</b></li>
+          <li><span class="text-muted-s">Vale hasta</span><b>30 de septiembre</b></li>
+        </ul>
+        <div class="your-cost" style="margin-bottom:0.75rem;">
+          <small>Tu costo: 20 cajas</small>
+          <div class="money" style="font-size:1.4rem;" data-your>Bs 1.440</div>
+        </div>
+        <button class="btn btn-o-line vote-btn" style="margin-top:auto;" onclick="pick('of-b')">
+          Votar por esta oferta
+        </button>
+      </div>
+
+      <!-- Oferta C: Importadora Titicaca -->
+      <div class="offer" data-price="68" id="of-c">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
+          <div style="display:flex; gap:0.5rem; align-items:center;">
+            <div class="avatar av3" style="border-radius:12px;">IT</div>
+            <div style="line-height:1.2;">
+              <div style="font-weight:700;">Importadora Titicaca</div>
+              <small><span class="stars">★★★★☆</span> 4,3</small>
+            </div>
+          </div>
+          <span class="badge-s b-warn">Precio más bajo</span>
+        </div>
+        <div style="margin-bottom:0.75rem;">
+          <span class="price money">Bs 68</span> <small class="text-muted-s">por caja</small>
+          <div style="font-size:0.88rem; color:var(--color-ok);"><b>Ahorras 15%</b> frente al precio normal</div>
+        </div>
+        <ul style="margin-bottom:0.75rem;">
+          <li><span class="text-muted-s">Total del grupo</span><b>Bs 6.800</b></li>
+          <li><span class="text-muted-s">Entrega</span><b>7 días</b></li>
+          <li><span class="text-muted-s">Pago</span><b>50% adelantado</b></li>
+          <li><span class="text-muted-s">Vale hasta</span><b>2 de octubre</b></li>
+        </ul>
+        <div class="your-cost" style="margin-bottom:0.75rem;">
+          <small>Tu costo: 20 cajas</small>
+          <div class="money" style="font-size:1.4rem;" data-your>Bs 1.360</div>
+        </div>
+        <button class="btn btn-o-line vote-btn" style="margin-top:auto;" onclick="pick('of-c')">
+          Votar por esta oferta
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Summary bar -->
+    <div class="summary-bar" style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1rem;">
+      <div>
+        <div style="font-size:0.88rem; opacity:0.75;">Si gana esta oferta, pagas solo tu pedido</div>
+        <div class="money" style="font-size:1.3rem;" id="sum-line">20 cajas x Bs 70 = Bs 1.400</div>
+      </div>
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+        <button class="btn btn-white btn-sm" onclick="window.toast('Se abre la comparación lado a lado')"><i class="bi bi-columns-gap"></i> Comparar</button>
+        <button class="btn btn-o btn-sm" onclick="window.toast('Tu voto quedó registrado')">Confirmar mi voto</button>
+      </div>
+    </div>
+
+    <!-- Votos e info -->
+    <div style="display:grid; grid-template-columns:1fr; gap:0.75rem;">
+      <div class="panel-tint">
+        <div style="font-size:0.88rem;" class="text-muted-s">Votos hasta ahora</div>
+        <div style="display:flex; gap:0.5rem; align-items:flex-end; margin-top:0.5rem;">
+          <div style="flex:1;"><div class="money" style="font-size:1.6rem;">3</div><small>Andina</small></div>
+          <div style="flex:1;"><div class="money" style="font-size:1.6rem;">1</div><small>El Sol</small></div>
+          <div style="flex:1;"><div class="money" style="font-size:1.6rem;">1</div><small>Titicaca</small></div>
+        </div>
+      </div>
+      <div class="panel-tint" style="display:flex; gap:0.75rem; align-items:center;">
+        <span class="ico" style="background:#fff;"><i class="bi bi-info-circle-fill"></i></span>
+        <div style="font-size:0.88rem;">Cada participante confirma su propia compra. Quien no confirme antes del cierre sale del grupo y el total se recalcula. El pago se hace directo al proveedor, fuera de Summa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: PARTICIPANTES ── -->
+  <div class="tab-pane" id="g-part">
+    <div class="panel">
+      <div style="display:flex; flex-direction:column; gap:1rem;">
+        {[
+          { av:'av1', init:'CQ', name:'Carmen Quispe', biz:'Abarrotes Los Andes, Rodríguez', cajas:20, monto:'1.400', pct:'20', org:true },
+          { av:'av2', init:'JM', name:'Julián Mamani', biz:'Minimarket Mamani, Gran Poder', cajas:30, monto:'2.100', pct:'30', org:false },
+          { av:'av3', init:'RC', name:'Rosa Condori', biz:'Tienda Doña Rosa, Villa Fátima', cajas:25, monto:'1.750', pct:'25', org:false },
+          { av:'av4', init:'FC', name:'Freddy Choque', biz:'Abarrotes Choque, El Alto', cajas:15, monto:'1.050', pct:'15', org:false },
+          { av:'av5', init:'EA', name:'Elena Apaza', biz:'Kiosco La Esperanza, Sopocachi', cajas:10, monto:'700', pct:'10', org:false },
+        ].map(p => (
+          <div style="display:flex; align-items:center; gap:0.75rem;">
+            <div class={`avatar ${p.av}`}>{p.init}</div>
+            <div style="flex:1;">
+              <div style="font-weight:700;">{p.name} {p.org && <span class="badge-s b-o" style="margin-left:0.25rem;">Organiza</span>}</div>
+              <small class="text-muted-s">{p.biz}</small>
+              <div class="progress" style="height:8px; margin-top:0.4rem;"><div class="progress-bar" style={`width:${p.pct}%;`}></div></div>
+            </div>
+            <div style="text-align:right;">
+              <div class="money" style="font-size:1.1rem;">{p.cajas} cajas</div>
+              <small class="text-muted-s">Bs {p.monto}</small>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div class="divider-dash" style="margin-top:1.25rem; padding-top:0.75rem; display:flex; justify-content:space-between;">
+        <b>Total del grupo</b>
+        <span class="money" style="font-size:1.1rem; color:var(--color-orange-deep);">100 cajas</span>
+      </div>
+      <div style="font-size:0.88rem; margin-top:0.25rem;" class="text-muted-s">Los montos usan la oferta de Bs 70 por caja como referencia.</div>
+    </div>
+  </div>
+
+  <!-- ── TAB: COMENTARIOS ── -->
+  <div class="tab-pane" id="g-coment">
+    <div class="panel">
+      <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1rem;">
+        <div style="display:flex; gap:0.5rem;">
+          <div class="avatar av2" style="width:36px;height:36px;font-size:.8rem;flex:none;">JM</div>
+          <div>
+            <span style="font-weight:700; font-size:0.88rem;">Julián Mamani</span>
+            <span class="text-muted-s" style="font-size:0.88rem;"> hace 5 h</span>
+            <div class="bubble">¿Titicaca entrega en El Alto sin costo? Con 7 días me atraso para el feriado.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <div class="avatar av3" style="width:36px;height:36px;font-size:.8rem;flex:none;">IT</div>
+          <div>
+            <span style="font-weight:700; font-size:0.88rem;">Importadora Titicaca</span>
+            <span class="badge-s b-tint" style="padding:.1rem .5rem; margin:0 0.25rem;">Proveedor</span>
+            <span class="text-muted-s" style="font-size:0.88rem;">hace 4 h</span>
+            <div class="bubble">Sí, la entrega en La Paz y El Alto va incluida. El plazo de 7 días es por el desaduanaje.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.5rem;">
+          <div class="avatar av4" style="width:36px;height:36px;font-size:.8rem;flex:none;">FC</div>
+          <div>
+            <span style="font-weight:700; font-size:0.88rem;">Freddy Choque</span>
+            <span class="text-muted-s" style="font-size:0.88rem;"> hace 3 h</span>
+            <div class="bubble">Yo voto por Andina. Son 2 puntos más caros que Titicaca, pero llega antes y no hay que adelantar plata.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
+          <div style="text-align:right;">
+            <span style="font-weight:700; font-size:0.88rem;">Tú</span>
+            <span class="text-muted-s" style="font-size:0.88rem;"> hace 1 h</span>
+            <div><div class="bubble me" style="text-align:left;">Estoy de acuerdo. Mañana a las 18:00 cierra la votación, no se olviden de confirmar su compra.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="input-group">
+        <input class="form-control" placeholder="Escribe un comentario para el grupo" aria-label="Comentario" style="border-radius:12px 0 0 12px;">
+        <button class="btn btn-o" onclick="window.toast('Comentario publicado')" style="border-radius:0 12px 12px 0;">
+          <i class="bi bi-send-fill"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB: SEGUIMIENTO ── -->
+  <div class="tab-pane" id="g-seg">
+    <div class="panel">
+      <ul class="vt">
+        <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Grupo abierto</b><div style="font-size:0.88rem;" class="text-muted-s">22 de septiembre. Carmen creó el grupo con 20 cajas.</div></li>
+        <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Meta alcanzada</b><div style="font-size:0.88rem;" class="text-muted-s">26 de septiembre. 5 comerciantes reunieron 100 cajas.</div></li>
+        <li class="done"><span class="pt"><i class="bi bi-check"></i></span><b>Negociación</b><div style="font-size:0.88rem;" class="text-muted-s">27 al 29 de septiembre. Se recibieron 3 ofertas.</div></li>
+        <li class="now"><span class="pt"><i class="bi bi-hand-thumbs-up-fill"></i></span><b>Votación</b><div style="font-size:0.88rem;" class="text-muted-s">En curso. Cierra el 30 de septiembre a las 18:00. Votaron 5 de 5.</div></li>
+        <li><span class="pt"><i class="bi bi-dot"></i></span><b>Confirmada</b><div style="font-size:0.88rem;" class="text-muted-s">Cada participante confirma su compra.</div></li>
+        <li><span class="pt"><i class="bi bi-dot"></i></span><b>Pagada, en preparación y entregada</b><div style="font-size:0.88rem;" class="text-muted-s">Cada uno paga su pedido al proveedor y recibe su mercadería.</div></li>
+      </ul>
+    </div>
+  </div>
+
+  <style>
+    @media (min-width: 992px) {
+      .panel.flat > div { grid-template-columns: 2fr 1fr !important; }
+      #g-ofertas > div:first-child { grid-template-columns: repeat(3,1fr) !important; }
+      #g-ofertas > div:last-child { grid-template-columns: 1fr 2fr !important; }
+      .summary-bar { flex-direction: row !important; justify-content: space-between; align-items: center; }
+    }
+  </style>
+
+  <script>
+    // Tabs
+    document.querySelectorAll('#group-tabs .nav-link').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#group-tabs .nav-link').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.getAttribute('data-tab');
+        if (target) document.getElementById(target)?.classList.add('active');
+      });
+    });
+
+    // Votación de ofertas
+    function fmt(n: number) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+    function pick(id: string) {
+      document.querySelectorAll('.offer').forEach(o => {
+        const sel = o.id === id;
+        o.classList.toggle('selected', sel);
+        const b = o.querySelector('.vote-btn') as HTMLButtonElement;
+        b.className = 'btn mt-auto vote-btn ' + (sel ? 'btn-o' : 'btn-o-line');
+        b.innerHTML = sel ? '<i class="bi bi-check2-circle"></i> Votaste por esta oferta' : 'Votar por esta oferta';
+      });
+      const price = +(document.getElementById(id) as HTMLElement).dataset.price!;
+      const sumLine = document.getElementById('sum-line');
+      if (sumLine) sumLine.textContent = `20 cajas x Bs ${price} = Bs ${fmt(20 * price)}`;
+    }
+    (window as any).pick = pick;
+    pick('of-a');
+  </script>
+</AppLayout>

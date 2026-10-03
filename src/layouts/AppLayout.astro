@@ -1,0 +1,178 @@
+---
+// AppLayout.astro – Layout principal de la app Summa
+import SvgSymbols from '../components/brand/SvgSymbols.astro';
+import Wordmark from '../components/brand/Wordmark.astro';
+
+interface Props {
+  pageTitle: string;
+  role: 'comerciante' | 'proveedor';
+}
+const { pageTitle, role } = Astro.props;
+
+const navComerciant = [
+  { id: 'inicio',   href: '/comerciante',         icon: 'bi-house-heart-fill', label: 'Inicio' },
+  { id: 'explorar', href: '/comerciante/explorar', icon: 'bi-search',           label: 'Explorar' },
+  { id: 'grupos',   href: '/comerciante/grupo',    icon: 'bi-people-fill',      label: 'Grupos' },
+  { id: 'pedidos',  href: '/comerciante/pedidos',  icon: 'bi-box-seam-fill',    label: 'Pedidos' },
+];
+const navProveedor = [
+  { id: 'panel',   href: '/proveedor',          icon: 'bi-speedometer2',  label: 'Panel' },
+  { id: 'ofertar', href: '/proveedor/ofertar',  icon: 'bi-tag-fill',      label: 'Ofertar' },
+  { id: 'pedidos', href: '/proveedor/pedidos',  icon: 'bi-truck',         label: 'Pedidos' },
+];
+const navItems = role === 'comerciante' ? navComerciant : navProveedor;
+
+const userInfo = {
+  comerciante: { av: 'CQ', name: 'Carmen Quispe', biz: 'Abarrotes Los Andes', cls: 'av1' },
+  proveedor:   { av: 'DA', name: 'Distribuidora Andina', biz: 'Proveedor aprobado', cls: 'av2' },
+}[role];
+
+const currentPath = Astro.url.pathname;
+---
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{pageTitle} | Summa</title>
+  <meta name="description" content="Summa – Juntos compramos como grandes. Plataforma de compras colectivas para comerciantes y proveedores.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/global.css">
+</head>
+<body>
+  <SvgSymbols />
+
+  <!-- Sidebar desktop -->
+  <aside class="sidebar">
+    <div style="padding: 0 0.5rem; margin-bottom: 1.5rem;">
+      <Wordmark size="lg" />
+    </div>
+    <nav class="flex-grow-1" style="flex:1; overflow-y:auto;" aria-label="Navegación principal">
+      {navItems.map(item => (
+        <a
+          href={item.href}
+          class={`side-link ${currentPath === item.href || currentPath.startsWith(item.href + '/') ? 'active' : ''}`}
+          aria-current={currentPath === item.href ? 'page' : undefined}
+        >
+          <i class={`bi ${item.icon}`}></i>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+    <div class="side-user">
+      <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;">
+        <div class={`avatar ${userInfo.cls}`}>{userInfo.av}</div>
+        <div style="line-height:1.2;">
+          <div style="font-weight:700; font-size:0.92rem;">{userInfo.name}</div>
+          <small class="text-muted-s">{userInfo.biz}</small>
+        </div>
+      </div>
+      <a href="/" class="btn btn-o-line btn-sm" style="width:100%; justify-content:center;">
+        <i class="bi bi-box-arrow-left"></i> Cerrar sesión
+      </a>
+    </div>
+  </aside>
+
+  <div class="main-wrap">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div style="max-width:1400px; margin:0 auto; padding:0 1.25rem; display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+        <div style="display:flex; align-items:center; gap:0.75rem;">
+          <div style="display:block;" class="lg-hidden">
+            <Wordmark size="md" />
+          </div>
+          <h1 style="font-size:1.1rem; margin:0; display:none;" class="lg-show" id="page-title">{pageTitle}</h1>
+        </div>
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div class="role-toggle" role="group" aria-label="Cambiar de rol para la demo">
+            <a href="/comerciante">
+              <button class={role === 'comerciante' ? 'active' : ''}>Comerciante</button>
+            </a>
+            <a href="/proveedor">
+              <button class={role === 'proveedor' ? 'active' : ''}>Proveedor</button>
+            </a>
+          </div>
+          <div style="position:relative;">
+            <button class="bell" id="bell-btn" aria-label="Notificaciones">
+              <i class="bi bi-bell-fill"></i>
+              <span class="badge-n">3</span>
+            </button>
+            <div class="dropdown-notif" id="notif-dropdown">
+              <div style="padding:0.25rem 0.5rem 0.5rem; font-weight:700;">Notificaciones</div>
+              <div class="notif-item">
+                <div style="font-weight:600; font-size:0.92rem;">Llegó una nueva oferta</div>
+                <small class="text-muted-s">Importadora Titicaca ofrece Bs 68 por caja. Hace 12 min</small>
+              </div>
+              <div class="notif-item">
+                <div style="font-weight:600; font-size:0.92rem;">La votación cierra mañana a las 18:00</div>
+                <small class="text-muted-s">Grupo Aceite Fino 900 ml. Hace 2 h</small>
+              </div>
+              <div class="notif-item">
+                <div style="font-weight:600; font-size:0.92rem;">Tu pedido pasó a preparación</div>
+                <small class="text-muted-s">Pedido SM-2041. Ayer</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="page-content" style="min-height:100vh;">
+      <div style="max-width:1400px; margin:0 auto; padding:0 1.25rem;">
+        <slot />
+      </div>
+    </main>
+  </div>
+
+  <!-- Bottom Nav móvil -->
+  <nav class="bottom-nav" aria-label="Navegación móvil">
+    {navItems.map(item => (
+      <a href={item.href} style="text-decoration:none; flex:1;">
+        <button class={currentPath === item.href || currentPath.startsWith(item.href + '/') ? 'active' : ''}>
+          <i class={`bi ${item.icon}`}></i>
+          {item.label}
+        </button>
+      </a>
+    ))}
+  </nav>
+
+  <!-- Toast global -->
+  <div class="toast-s" id="toast" role="status" aria-live="polite"></div>
+
+  <style>
+    .lg-hidden { display: block; }
+    .lg-show { display: none; }
+    @media (min-width: 992px) {
+      .lg-hidden { display: none !important; }
+      .lg-show { display: block !important; }
+    }
+  </style>
+
+  <script>
+    // Toast global
+    window.toast = function(m) {
+      const t = document.getElementById('toast');
+      if (!t) return;
+      t.textContent = m;
+      t.classList.add('show');
+      clearTimeout((t as any)._t);
+      (t as any)._t = setTimeout(() => t.classList.remove('show'), 2600);
+    };
+
+    // Bell dropdown toggle
+    const bellBtn = document.getElementById('bell-btn');
+    const notifDropdown = document.getElementById('notif-dropdown');
+    bellBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notifDropdown?.classList.toggle('open');
+    });
+    document.addEventListener('click', () => {
+      notifDropdown?.classList.remove('open');
+    });
+  </script>
+</body>
+</html>

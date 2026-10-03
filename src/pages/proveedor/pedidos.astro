@@ -1,0 +1,114 @@
+---
+// proveedor/pedidos.astro – Pedidos del Proveedor (p-orders)
+import AppLayout from '../../layouts/AppLayout.astro';
+---
+<AppLayout pageTitle="Pedidos del proveedor" role="proveedor">
+
+  <!-- Header del pedido activo -->
+  <div class="panel flat" style="margin-bottom:1.25rem;">
+    <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:0.75rem;">
+      <div style="display:flex; gap:0.75rem; align-items:center;">
+        <div class="tile t6">🍬</div>
+        <div>
+          <span class="badge-s b-o" style="margin-bottom:0.2rem; display:inline-flex;">En preparación</span>
+          <h2 style="font-size:1.2rem; margin-bottom:0.1rem;">Azúcar Guabirá, quintal 50 kg</h2>
+          <small class="text-muted-s">Grupo de 5 comerciantes a Bs 385 por quintal</small>
+        </div>
+      </div>
+      <div style="text-align:right;">
+        <div class="money" style="font-size:1.8rem; color:var(--color-orange-deep);">Bs 38.500</div>
+        <small class="text-muted-s">100 quintales a despachar</small>
+      </div>
+    </div>
+    <div class="divider-dash" style="margin:0.75rem 0;"></div>
+    <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+      <button class="btn btn-o" onclick="window.toast('El grupo pasó a En camino. Se avisó a los comerciantes')">
+        <i class="bi bi-truck"></i> Marcar como enviado
+      </button>
+      <button class="btn btn-o-line" onclick="window.toast('Se generó la hoja de despacho')">
+        <i class="bi bi-printer"></i> Hoja de despacho
+      </button>
+    </div>
+  </div>
+
+  <!-- Tabla de comerciantes -->
+  <div class="panel" style="padding:0; overflow:hidden;">
+    <div style="overflow-x:auto;">
+      <table class="summa-table">
+        <thead>
+          <tr>
+            <th style="padding-left:1rem;">Comerciante</th>
+            <th>Cantidad</th>
+            <th>Monto</th>
+            <th>Entrega</th>
+            <th>Pago</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding-left:1rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="avatar av1" style="width:36px;height:36px;font-size:.8rem;">CQ</div>
+                <div style="line-height:1.2;"><b>Carmen Quispe</b><div style="font-size:0.85rem;" class="text-muted-s">Rodríguez</div></div>
+              </div>
+            </td>
+            <td>10</td>
+            <td style="font-weight:700;">Bs 3.850</td>
+            <td>Vie 2 oct</td>
+            <td><span class="badge-s b-ok">Pagado</span></td>
+          </tr>
+          <tr>
+            <td style="padding-left:1rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="avatar av2" style="width:36px;height:36px;font-size:.8rem;">JM</div>
+                <div style="line-height:1.2;"><b>Julián Mamani</b><div style="font-size:0.85rem;" class="text-muted-s">Gran Poder</div></div>
+              </div>
+            </td>
+            <td>20</td>
+            <td style="font-weight:700;">Bs 7.700</td>
+            <td>Vie 2 oct</td>
+            <td><span class="badge-s b-ok">Pagado</span></td>
+          </tr>
+          <tr>
+            <td style="padding-left:1rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="avatar av3" style="width:36px;height:36px;font-size:.8rem;">RC</div>
+                <div style="line-height:1.2;"><b>Rosa Condori</b><div style="font-size:0.85rem;" class="text-muted-s">Villa Fátima</div></div>
+              </div>
+            </td>
+            <td>30</td>
+            <td style="font-weight:700;">Bs 11.550</td>
+            <td>Vie 2 oct</td>
+            <td>
+              <button class="btn btn-o btn-sm" onclick="window.toast('Pago de Rosa Condori confirmado')">Confirmar pago</button>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding-left:1rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="avatar av4" style="width:36px;height:36px;font-size:.8rem;">FC</div>
+                <div style="line-height:1.2;"><b>Freddy Choque</b><div style="font-size:0.85rem;" class="text-muted-s">El Alto</div></div>
+              </div>
+            </td>
+            <td>25</td>
+            <td style="font-weight:700;">Bs 9.625</td>
+            <td>Sáb 3 oct</td>
+            <td><span class="badge-s b-ok">Pagado</span></td>
+          </tr>
+          <tr>
+            <td style="padding-left:1rem;">
+              <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div class="avatar av5" style="width:36px;height:36px;font-size:.8rem;">EA</div>
+                <div style="line-height:1.2;"><b>Elena Apaza</b><div style="font-size:0.85rem;" class="text-muted-s">Sopocachi</div></div>
+              </div>
+            </td>
+            <td>15</td>
+            <td style="font-weight:700;">Bs 5.775</td>
+            <td>Vie 2 oct</td>
+            <td><span class="badge-s b-warn">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</AppLayout>
