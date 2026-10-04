@@ -1,121 +1,154 @@
 ---
-// proveedor/ofertar.astro – Enviar Oferta (p-offer)
+// proveedor/ofertar.astro – Enviar Oferta / Publicar (p-offer)
 import AppLayout from '../../layouts/AppLayout.astro';
+import { INITIAL_PRODUCTS, STORAGE_KEY } from '../../data/products';
 ---
-<AppLayout pageTitle="Enviar oferta" role="proveedor">
-  <div style="display:grid; grid-template-columns:1fr; gap:1.5rem;">
+<AppLayout pageTitle="Enviar oferta / Publicar" role="proveedor">
+  <div style="margin-bottom:1.5rem;">
+    <a href="/proveedor" style="text-decoration:none; color:var(--color-muted); font-weight:600; font-size:0.92rem;">
+      <i class="bi bi-arrow-left"></i> Volver al panel
+    </a>
+  </div>
 
-    <!-- Columna izquierda: info del grupo -->
-    <div>
-      <div class="panel flat" style="margin-bottom:0.75rem;">
-        <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
-          <div class="tile lg t2">🛢️</div>
+  <!-- Paso 1: Selector de producto -->
+  <div id="step-1-selector">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:1rem;">
+      <h2 style="font-family:var(--font-display); font-size:1.6rem; font-weight:800; letter-spacing:-.03em; margin:0;">
+        Selecciona un producto para ofertar o publicar
+      </h2>
+      <div class="input-group" style="max-width:300px; width:100%;">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input type="text" id="search-prod" class="form-control" placeholder="Buscar producto..." oninput="handleSearch()" style="border-radius:0 12px 12px 0;">
+      </div>
+    </div>
+    
+    <div id="products-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:1rem;">
+      <!-- Llenado por JS -->
+    </div>
+  </div>
+
+  <!-- Paso 2: Formulario de oferta (oculto por defecto) -->
+  <div id="step-2-form" style="display:none;">
+    <div style="margin-bottom:1rem;">
+      <button class="btn btn-o-line btn-sm" onclick="showStep1()">
+        <i class="bi bi-arrow-left"></i> Cambiar producto
+      </button>
+    </div>
+
+    <div class="ofertar-grid">
+      <!-- Columna izquierda: info del grupo/producto -->
+      <div>
+        <div class="panel flat" style="margin-bottom:0.75rem;">
+          <div style="display:flex; gap:0.75rem; margin-bottom:0.75rem;">
+            <div id="prod-tile" class="tile lg t2">🛢️</div>
+            <div>
+              <span id="prod-demand-badge" class="badge-s b-o" style="margin-bottom:0.4rem; display:inline-flex;">Cierra mañana</span>
+              <h2 id="prod-name" style="font-size:1.2rem; margin-bottom:0.2rem;">Aceite Fino 800 ml, caja x12</h2>
+              <small id="prod-demand-text" class="text-muted-s">Grupo organizado por Carmen Quispe</small>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; text-align:center; margin-bottom:0.75rem;">
+            <div class="panel-tint" style="padding:0.5rem;">
+              <div class="money" style="font-size:1.4rem;" id="prod-stock">100</div>
+              <small>stock disponible</small>
+            </div>
+            <div class="panel-tint" style="padding:0.5rem;">
+              <div class="money" style="font-size:1.4rem;" id="prod-demand-qty">5</div>
+              <small>comerciantes</small>
+            </div>
+            <div class="panel-tint" style="padding:0.5rem;">
+              <div class="money" style="font-size:1.4rem;" id="prod-base-price">Bs 80</div>
+              <small>precio normal</small>
+            </div>
+          </div>
+          <div class="divider-dash" style="margin-bottom:0.75rem;"></div>
+          <div style="font-size:0.88rem; display:flex; flex-direction:column; gap:0.3rem;" id="prod-extra-info">
+            <!-- info extra -->
+          </div>
+        </div>
+
+        <!-- Resultado calculado -->
+        <div class="panel-tint">
+          <b>Resultado para tu oferta</b>
+          <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+            <span>Total estimado</span>
+            <span class="money" style="font-size:1.4rem;" id="pv-total">Bs 7.000</span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span>Ahorro para el grupo</span>
+            <span class="money" style="font-size:1.1rem; color:var(--color-ok);" id="pv-save">Bs 1.000 (12,5%)</span>
+          </div>
+          <div style="font-size:0.85rem; margin-top:0.5rem;" class="text-muted-s">Los comerciantes verán el ahorro contra el precio normal y su costo individual.</div>
+        </div>
+      </div>
+
+      <!-- Columna derecha: formulario -->
+      <div class="panel flat">
+        <h3 style="font-size:1.2rem; margin-bottom:1rem;">Detalles de la oferta / publicación</h3>
+        <div class="ofertar-form-grid">
+
           <div>
-            <span class="badge-s b-o" style="margin-bottom:0.4rem; display:inline-flex;">Cierra mañana</span>
-            <h2 style="font-size:1.2rem; margin-bottom:0.2rem;">Aceite Fino 800 ml, caja x12</h2>
-            <small class="text-muted-s">Grupo organizado por Carmen Quispe</small>
+            <label class="form-label" for="f-price" id="label-price">Precio por caja</label>
+            <div class="input-group">
+              <span class="input-group-text">Bs</span>
+              <input id="f-price" type="number" class="form-control" value="70" min="1" step="0.5" style="border-radius:0 12px 12px 0; border-left:0;">
+            </div>
           </div>
-        </div>
-        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; text-align:center; margin-bottom:0.75rem;">
-          <div class="panel-tint" style="padding:0.5rem;">
-            <div class="money" style="font-size:1.4rem;">100</div>
-            <small>cajas</small>
-          </div>
-          <div class="panel-tint" style="padding:0.5rem;">
-            <div class="money" style="font-size:1.4rem;">5</div>
-            <small>comerciantes</small>
-          </div>
-          <div class="panel-tint" style="padding:0.5rem;">
-            <div class="money" style="font-size:1.4rem;">Bs 80</div>
-            <small>precio normal</small>
-          </div>
-        </div>
-        <div class="divider-dash" style="margin-bottom:0.75rem;"></div>
-        <div style="font-size:0.88rem; display:flex; flex-direction:column; gap:0.3rem;">
-          <div><i class="bi bi-geo-alt-fill text-o"></i> Entrega en Rodríguez, Gran Poder, Villa Fátima, El Alto y Sopocachi</div>
-          <div><i class="bi bi-chat-quote-fill text-o"></i> Condición del grupo: marca conocida y entrega antes del feriado</div>
-          <div><i class="bi bi-people-fill text-o"></i> Ya hay 2 ofertas de otros proveedores</div>
-        </div>
-      </div>
 
-      <!-- Resultado calculado -->
-      <div class="panel-tint">
-        <b>Resultado para tu oferta</b>
-        <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
-          <span>Total del pedido</span>
-          <span class="money" style="font-size:1.4rem;" id="pv-total">Bs 7.000</span>
-        </div>
-        <div style="display:flex; justify-content:space-between;">
-          <span>Ahorro para el grupo</span>
-          <span class="money" style="font-size:1.1rem; color:var(--color-ok);" id="pv-save">Bs 1.000 (12,5%)</span>
-        </div>
-        <div style="font-size:0.85rem; margin-top:0.5rem;" class="text-muted-s">Los comerciantes verán el ahorro contra el precio normal y su costo individual.</div>
-      </div>
-    </div>
+          <div>
+            <label class="form-label" for="f-qty" id="label-qty">Cajas que puedes cubrir</label>
+            <input id="f-qty" type="number" class="form-control" value="100" min="1">
+          </div>
 
-    <!-- Columna derecha: formulario -->
-    <div class="panel flat">
-      <h3 style="font-size:1.2rem; margin-bottom:1rem;">Tu oferta al grupo</h3>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem;">
+          <div>
+            <label class="form-label" for="f-days">Tiempo de entrega</label>
+            <div class="input-group">
+              <input id="f-days" type="number" class="form-control" value="3" style="border-radius:12px 0 0 12px; border-right:0;">
+              <span class="input-group-text" style="border-radius:0 12px 12px 0; border-left:0;">días</span>
+            </div>
+          </div>
 
-        <div>
-          <label class="form-label" for="f-price">Precio por caja</label>
-          <div class="input-group">
-            <span class="input-group-text">Bs</span>
-            <input id="f-price" type="number" class="form-control" value="70" min="1" style="border-radius:0 12px 12px 0; border-left:0;">
+          <div>
+            <label class="form-label" for="f-valid">La oferta vale hasta</label>
+            <input id="f-valid" type="date" class="form-control" value="2026-10-01">
+          </div>
+
+          <div>
+            <label class="form-label" for="f-deliv">Forma de entrega</label>
+            <select id="f-deliv" class="form-select">
+              <option>Entrega a domicilio sin costo</option>
+              <option>Entrega a domicilio con costo</option>
+              <option>Recojo en almacén</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="form-label" for="f-pay">Forma de pago</label>
+            <select id="f-pay" class="form-select">
+              <option>Contra confirmación del pedido</option>
+              <option>Contra entrega</option>
+              <option>50% adelantado</option>
+            </select>
+          </div>
+
+          <div style="grid-column:1/-1;">
+            <label class="form-label" for="f-note">Condiciones y garantía</label>
+            <textarea id="f-note" class="form-control" rows="3">Cambio de productos dañados dentro de las 48 horas. Facturamos a cada comerciante por su pedido.</textarea>
           </div>
         </div>
 
-        <div>
-          <label class="form-label" for="f-qty">Cajas que puedes cubrir</label>
-          <input id="f-qty" type="number" class="form-control" value="100" min="1" max="100">
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem;">
+          <!-- Botón 1: Enviar oferta al grupo -->
+          <button id="btn-enviar" class="btn btn-o">
+            <i class="bi bi-send-fill"></i> Enviar oferta
+          </button>
+          <!-- Botón 2: Publicar en catálogo -->
+          <button id="btn-publicar" class="btn btn-o-line">
+            <i class="bi bi-broadcast"></i> Publicar en catálogo
+          </button>
         </div>
-
-        <div>
-          <label class="form-label" for="f-days">Tiempo de entrega</label>
-          <div class="input-group">
-            <input id="f-days" type="number" class="form-control" value="3" style="border-radius:12px 0 0 12px; border-right:0;">
-            <span class="input-group-text" style="border-radius:0 12px 12px 0; border-left:0;">días</span>
-          </div>
-        </div>
-
-        <div>
-          <label class="form-label" for="f-valid">La oferta vale hasta</label>
-          <input id="f-valid" type="date" class="form-control" value="2026-10-01">
-        </div>
-
-        <div>
-          <label class="form-label" for="f-deliv">Forma de entrega</label>
-          <select id="f-deliv" class="form-select">
-            <option>Entrega a domicilio sin costo</option>
-            <option>Entrega a domicilio con costo</option>
-            <option>Recojo en almacén</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="form-label" for="f-pay">Forma de pago</label>
-          <select id="f-pay" class="form-select">
-            <option>Contra confirmación del pedido</option>
-            <option>Contra entrega</option>
-            <option>50% adelantado</option>
-          </select>
-        </div>
-
-        <div style="grid-column:1/-1;">
-          <label class="form-label" for="f-note">Condiciones y garantía</label>
-          <textarea id="f-note" class="form-control" rows="3">Cambio de cajas dañadas dentro de las 48 horas. Facturamos a cada comerciante por su pedido.</textarea>
-        </div>
-      </div>
-
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-top:1.25rem;">
-        <button class="btn btn-o" onclick="window.toast('Oferta enviada a los 5 comerciantes del grupo')">
-          <i class="bi bi-send-fill"></i> Enviar oferta
-        </button>
-        <button class="btn btn-o-line" onclick="window.toast('Borrador guardado')">Guardar borrador</button>
       </div>
     </div>
-
   </div>
 
   <style>
@@ -133,36 +166,275 @@ import AppLayout from '../../layouts/AppLayout.astro';
       box-shadow: 0 0 0 0.25rem rgba(255,107,0,.15);
       outline: none;
     }
+    .ofertar-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .ofertar-form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+    #pv-total, #pv-save {
+      transition: color 0.2s, transform 0.15s;
+      display: inline-block;
+    }
+    .form-control.invalid, .form-select.invalid {
+      border-color: #C0392B;
+      box-shadow: 0 0 0 0.25rem rgba(192, 57, 43, 0.15);
+    }
+    .product-select-card {
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .product-select-card:hover {
+      border-color: var(--color-orange-line);
+      box-shadow: 0 4px 16px rgba(255, 107, 0, 0.08);
+    }
+    @media (min-width: 576px) {
+      .ofertar-form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
     @media (min-width: 992px) {
-      section > div > div[style*="grid-template-columns:1fr"]:has(.panel.flat) {
-        grid-template-columns: 5fr 7fr !important;
+      .ofertar-grid {
+        grid-template-columns: 5fr 7fr;
       }
     }
   </style>
 
-  <script>
-    function fmt(n: number) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+  <script define:vars={{ INITIAL_PRODUCTS, STORAGE_KEY }}>
+    let allProducts = [];
+    let selectedProduct = null;
+    let basePrice = 80;
+
+    function fmt(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
+
+    function loadProducts() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          allProducts = JSON.parse(stored);
+        } else {
+          allProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(allProducts));
+        }
+      } catch (e) {
+        allProducts = JSON.parse(JSON.stringify(INITIAL_PRODUCTS));
+      }
+    }
+
+    function getProviderProducts() {
+      return allProducts.filter(p => p.proveedor === 'Distribuidora Andina');
+    }
+
+    window.handleSearch = function() {
+      renderProducts();
+    };
+
+    function renderProducts() {
+      const q = (document.getElementById('search-prod')?.value || '').toLowerCase();
+      const list = getProviderProducts().filter(p => p.nombre.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q));
+      
+      const container = document.getElementById('products-list');
+      if (!container) return;
+      
+      if (list.length === 0) {
+        container.innerHTML = '<p class="text-muted-s">No se encontraron productos.</p>';
+        return;
+      }
+
+      container.innerHTML = list.map(p => {
+        const pBase = p.escalas && p.escalas[0] ? p.escalas[0].precio : 'Bs --';
+        return `
+          <div class="panel product-select-card" onclick="window.selectProduct('${p.id}')">
+            <div style="display:flex; gap:0.75rem; align-items:center;">
+              <div class="tile ${p.tileCls || 't2'}" style="width:48px;height:48px;font-size:1.5rem;">${p.tile || '📦'}</div>
+              <div style="flex:1; min-width:0;">
+                <h3 style="font-size:1rem; margin:0 0 0.2rem 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.nombre}</h3>
+                <small class="text-muted-s">Stock: ${p.stock} ${p.unidad} · Base: ${pBase}</small>
+              </div>
+              <i class="bi bi-chevron-right text-o"></i>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.selectProduct = function(id) {
+      selectedProduct = allProducts.find(p => p.id === id);
+      if (!selectedProduct) return;
+
+      // Actualizar UI del producto
+      document.getElementById('prod-tile').className = `tile lg ${selectedProduct.tileCls || 't2'}`;
+      document.getElementById('prod-tile').textContent = selectedProduct.tile || '📦';
+      document.getElementById('prod-name').textContent = selectedProduct.nombre;
+      
+      const hasDemand = selectedProduct.grupo && selectedProduct.grupo.tieneGrupo;
+      
+      document.getElementById('prod-demand-badge').textContent = hasDemand ? 'Demanda activa' : 'Sin grupos';
+      document.getElementById('prod-demand-badge').className = `badge-s ${hasDemand ? 'b-o' : 'b-tint'}`;
+      document.getElementById('prod-demand-text').textContent = hasDemand ? selectedProduct.grupo.texto : 'No hay grupos organizados para este producto';
+      
+      document.getElementById('prod-stock').textContent = selectedProduct.stock;
+      document.getElementById('prod-demand-qty').textContent = hasDemand ? 'Varios' : '0';
+
+      const pBaseStr = selectedProduct.escalas && selectedProduct.escalas[0] ? selectedProduct.escalas[0].precio : 'Bs 0';
+      basePrice = parseFloat(pBaseStr.replace('Bs', '').trim()) || 0;
+      
+      document.getElementById('prod-base-price').textContent = `Bs ${basePrice}`;
+
+      // Actualizar labels del formulario
+      document.getElementById('label-price').textContent = `Precio por ${selectedProduct.unidad.replace(/s$/, '')}`;
+      document.getElementById('label-qty').textContent = `${selectedProduct.unidad.charAt(0).toUpperCase() + selectedProduct.unidad.slice(1)} que puedes cubrir`;
+
+      // Pre-llenar valores
+      const pMaxStr = selectedProduct.escalas && selectedProduct.escalas.length ? selectedProduct.escalas[selectedProduct.escalas.length - 1].precio : pBaseStr;
+      const pMax = parseFloat(pMaxStr.replace('Bs', '').trim()) || basePrice;
+      
+      document.getElementById('f-price').value = pMax;
+      document.getElementById('f-qty').value = selectedProduct.stock > 100 ? 100 : selectedProduct.stock;
+
+      // Info extra
+      document.getElementById('prod-extra-info').innerHTML = `
+        <div><i class="bi bi-info-circle-fill text-o"></i> Unidad: ${selectedProduct.unidad}</div>
+        <div><i class="bi bi-tag-fill text-o"></i> SKU: ${selectedProduct.sku}</div>
+      `;
+
+      // Mostrar paso 2
+      document.getElementById('step-1-selector').style.display = 'none';
+      document.getElementById('step-2-form').style.display = 'block';
+
+      calcOffer();
+    };
+
+    window.showStep1 = function() {
+      document.getElementById('step-1-selector').style.display = 'block';
+      document.getElementById('step-2-form').style.display = 'none';
+      selectedProduct = null;
+    };
 
     function calcOffer() {
-      const p = +(document.getElementById('f-price') as HTMLInputElement).value || 0;
-      const q = +(document.getElementById('f-qty') as HTMLInputElement).value || 0;
+      if (!selectedProduct) return;
+      const p = +(document.getElementById('f-price').value) || 0;
+      const q = +(document.getElementById('f-qty').value) || 0;
       const total = p * q;
-      const save = (80 - p) * q;
-      const pct = p > 0 ? (((80 - p) / 80) * 100) : 0;
+      const save = (basePrice - p) * q;
+      const pct = p > 0 && basePrice > 0 ? (((basePrice - p) / basePrice) * 100) : 0;
 
       const pvTotal = document.getElementById('pv-total');
       const pvSave = document.getElementById('pv-save');
-      if (pvTotal) pvTotal.textContent = 'Bs ' + fmt(total);
+      if (pvTotal) {
+        pvTotal.textContent = 'Bs ' + fmt(total);
+        pvTotal.style.transform = 'scale(1.05)';
+        setTimeout(() => pvTotal.style.transform = 'none', 150);
+      }
       if (pvSave) {
         pvSave.textContent = save >= 0
           ? `Bs ${fmt(save)} (${pct.toFixed(1).replace('.', ',')}%)`
           : 'Tu precio supera el normal';
         pvSave.style.color = save >= 0 ? 'var(--color-ok)' : '#C0392B';
+        pvSave.style.transform = 'scale(1.05)';
+        setTimeout(() => pvSave.style.transform = 'none', 150);
       }
     }
 
     document.getElementById('f-price')?.addEventListener('input', calcOffer);
     document.getElementById('f-qty')?.addEventListener('input', calcOffer);
-    calcOffer();
+
+    // Enviar oferta
+    const btnEnviar = document.getElementById('btn-enviar');
+    if (btnEnviar) {
+      btnEnviar.addEventListener('click', async () => {
+        if (!validateForm()) return;
+
+        btnEnviar.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
+        btnEnviar.disabled = true;
+        
+        await new Promise(r => setTimeout(r, 1000));
+        
+        window.toast('✅ Oferta enviada a los comerciantes del grupo');
+        btnEnviar.innerHTML = '<i class="bi bi-check-circle-fill"></i> Oferta enviada';
+        btnEnviar.style.backgroundColor = 'var(--color-ok)';
+        btnEnviar.style.borderColor = 'var(--color-ok)';
+        
+        setTimeout(() => {
+          window.location.href = '/proveedor';
+        }, 1500);
+      });
+    }
+
+    // Publicar
+    const btnPublicar = document.getElementById('btn-publicar');
+    if (btnPublicar) {
+      btnPublicar.addEventListener('click', async () => {
+        if (!validateForm()) return;
+        if (!selectedProduct) return;
+
+        btnPublicar.innerHTML = '<i class="bi bi-hourglass-split"></i> Publicando...';
+        btnPublicar.disabled = true;
+
+        const p = +(document.getElementById('f-price').value) || 0;
+        const q = +(document.getElementById('f-qty').value) || 0;
+        
+        // Actualizar en localStorage
+        const prodIndex = allProducts.findIndex(pr => pr.id === selectedProduct.id);
+        if (prodIndex !== -1) {
+          allProducts[prodIndex].publicado = true;
+          // Modificar la cantidad de unidades disponibles (stock)
+          allProducts[prodIndex].stock = q;
+          allProducts[prodIndex].stockStatus = q < 50 ? 'low' : 'ok';
+          
+          if (allProducts[prodIndex].escalas && allProducts[prodIndex].escalas.length > 0) {
+             const lastIdx = allProducts[prodIndex].escalas.length - 1;
+             allProducts[prodIndex].escalas[lastIdx].precio = `Bs ${p}`;
+             allProducts[prodIndex].escalas[lastIdx].tramo = `${q} o más`; // También actualizamos el texto de la escala
+          }
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(allProducts));
+        }
+
+        await new Promise(r => setTimeout(r, 1000));
+        
+        window.toast('✅ Producto publicado en el catálogo');
+        btnPublicar.innerHTML = '<i class="bi bi-check-circle-fill"></i> Publicado';
+        btnPublicar.classList.remove('btn-o-line');
+        btnPublicar.classList.add('btn-ok');
+        btnPublicar.style.backgroundColor = 'var(--color-ok)';
+        btnPublicar.style.color = '#fff';
+        btnPublicar.style.borderColor = 'var(--color-ok)';
+        
+        setTimeout(() => {
+          window.location.href = '/proveedor/productos';
+        }, 1500);
+      });
+    }
+
+    function validateForm() {
+      const fPrice = document.getElementById('f-price');
+      const fQty = document.getElementById('f-qty');
+      const p = +fPrice.value || 0;
+      const q = +fQty.value || 0;
+      
+      fPrice.classList.remove('invalid');
+      fQty.classList.remove('invalid');
+      
+      if (p <= 0 || q <= 0) {
+        if (p <= 0) fPrice.classList.add('invalid');
+        if (q <= 0) fQty.classList.add('invalid');
+        window.toast('Por favor, ingresa un precio y cantidad válidos');
+        return false;
+      }
+      return true;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProducts();
+      renderProducts();
+    });
+    // Por si ya estaba cargado
+    loadProducts();
+    renderProducts();
+
   </script>
 </AppLayout>
