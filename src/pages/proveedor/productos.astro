@@ -590,6 +590,10 @@ import { INITIAL_PRODUCTS, STORAGE_KEY } from '../../data/products';
                 <i class="bi ${isPublished ? 'bi-eye-slash' : 'bi-broadcast'}"></i> ${isPublished ? 'Pausar' : 'Publicar'}
               </button>
 
+              <button class="btn btn-o-line btn-sm" style="padding-left:0.6rem; padding-right:0.6rem;" onclick="window.deleteProduct('${p.id}')" title="Eliminar producto">
+                <i class="bi bi-trash"></i>
+              </button>
+
               ${hasDemand && p.grupo.link ? `
                 <a href="${p.grupo.link}" class="btn btn-o btn-sm" style="padding-left:0.6rem; padding-right:0.6rem;" title="Ver grupos / ofertas">
                   <i class="bi bi-arrow-right"></i>
@@ -656,6 +660,13 @@ import { INITIAL_PRODUCTS, STORAGE_KEY } from '../../data/products';
                   onclick="window.togglePublish('${p.id}')"
                 >
                   <i class="bi ${isPublished ? 'bi-eye-slash' : 'bi-broadcast'}"></i>
+                </button>
+                <button 
+                  class="btn btn-o-line btn-sm" 
+                  title="Eliminar producto"
+                  onclick="window.deleteProduct('${p.id}')"
+                >
+                  <i class="bi bi-trash"></i>
                 </button>
               </div>
             </td>
@@ -775,6 +786,15 @@ import { INITIAL_PRODUCTS, STORAGE_KEY } from '../../data/products';
         } else {
           window.toast(`"${prod.nombre}" fue PAUSADO (no aparecerá a comerciantes).`);
         }
+      }
+    };
+
+    window.deleteProduct = function(id) {
+      if (confirm('¿Estás seguro de que deseas eliminar este producto de forma permanente?')) {
+        allProducts = allProducts.filter(p => p.id !== id);
+        saveProducts();
+        render();
+        window.toast('Producto eliminado exitosamente.');
       }
     };
 
